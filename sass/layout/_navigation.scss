@@ -1,0 +1,85 @@
+@media (450px <= width <= 600px) {
+    .user-panel, .cart {
+        p {
+          display: none;
+        }
+    }
+}
+
+@media (width < 450px) {
+    .navbar {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas: 
+            "logo user cart"
+            "search search search"
+    }
+
+    .user-panel {
+        justify-self: end;
+    }
+
+    .cart {
+        justify-self: end;
+    }
+}
+
+.navbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: "logo search user cart";
+    align-items: center;
+    gap: 10px; 
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none; 
+    grid-area: logo;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  grid-area: search;
+
+  input {
+      flex-grow: 1;
+      padding: 8px;
+      border: none;
+      outline: none;
+  }
+
+  .material-icons {
+      padding: 8px;
+      cursor: pointer;
+  }
+}
+
+.user-panel, .cart {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: black;
+  justify-self: end; 
+}
+
+.user-panel {
+  grid-area: user;
+}
+
+.cart {
+  grid-area: cart;
+}
