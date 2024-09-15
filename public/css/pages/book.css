@@ -124,6 +124,11 @@
   background-color: #f5f5f5;
   padding: 20px;
   border-radius: 8px;
+  border: 1px solid #ddd;
+  width: 250px;
+}
+.book-details .book-pricing .price-button:has(> input[type=radio]:checked) {
+  background-color: #eaeaea;
 }
 .book-details .book-pricing .price-button {
   background-color: #f8f8f8;
@@ -135,9 +140,17 @@
   width: 200px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
 }
-.book-details .book-pricing .price-button.active {
-  background-color: #eaeaea;
+.book-details .book-pricing .price-button input[type=radio] {
+  position: absolute;
+  left: -9999px;
+}
+.book-details .book-pricing .price-button span {
+  font-weight: bold;
 }
 .book-details .book-pricing .total-price {
   text-align: center;
@@ -156,6 +169,7 @@
   cursor: pointer;
   margin-top: 10px;
   text-align: center;
+  width: 100%;
 }
 
 .offers {

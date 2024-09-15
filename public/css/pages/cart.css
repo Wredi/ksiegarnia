@@ -1,0 +1,195 @@
+.page {
+  margin: auto;
+  max-width: 1500px;
+}
+.page > * {
+  margin: 10px;
+}
+
+.material-icons {
+  font-size: 30px;
+}
+
+@media (450px <= width <= 600px) {
+  .user-panel p, .cart p {
+    display: none;
+  }
+}
+@media (width < 450px) {
+  .navbar {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: "logo user cart" "search search search";
+  }
+  .user-panel {
+    justify-self: end;
+  }
+  .cart {
+    justify-self: end;
+  }
+}
+.navbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas: "logo search user cart";
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  grid-area: logo;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  grid-area: search;
+}
+.search input {
+  flex-grow: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+}
+.search .material-icons {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.user-panel, .cart {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: black;
+  justify-self: end;
+}
+
+.user-panel {
+  grid-area: user;
+}
+
+.cart {
+  grid-area: cart;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cart-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+.cart-container .cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cart-container .cart-items .cart-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto 1fr;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.cart-container .cart-items .cart-item .book-info {
+  display: flex;
+  align-items: center;
+}
+.cart-container .cart-items .cart-item .book-info .book-image {
+  width: 50px;
+  margin-right: 10px;
+}
+.cart-container .cart-items .cart-item .book-info .book-details p {
+  margin: 0;
+}
+.cart-container .cart-items .cart-item .book-info .book-details .authors {
+  color: #bbb;
+  font-size: 12px;
+}
+.cart-container .cart-items .cart-item .book-price,
+.cart-container .cart-items .cart-item .total-price {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+.cart-container .cart-items .cart-item .quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cart-container .cart-items .cart-item .quantity-control .quantity-input {
+  width: 60px;
+  text-align: center;
+  border: none;
+  margin: 0;
+  font-size: 18px;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+  line-height: 100%;
+}
+.cart-container .cart-items .cart-item .quantity-control .quantity-input:focus {
+  outline: none;
+}
+.cart-container .cart-items .cart-item .quantity-control button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+}
+.cart-container .cart-items .cart-item .quantity-control button:hover {
+  background-color: #ddd;
+}
+.cart-container .cart-items .cart-item .quantity-control button:first-of-type {
+  border-right: 1px solid #ddd;
+}
+.cart-container .cart-items .cart-item .quantity-control button:last-of-type {
+  border-left: 1px solid #ddd;
+}
+.cart-container .cart-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.cart-container .cart-summary .summary-details {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.cart-container .cart-summary .checkout-button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+.cart-container .cart-summary .checkout-button:hover {
+  background-color: #218838;
+}
+
+/*# sourceMappingURL=cart.css.map */

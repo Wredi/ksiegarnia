@@ -1,0 +1,132 @@
+@use '../base/base';
+@use '../layout/navigation';
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cart-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto 1fr;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ddd; 
+
+      .book-info {
+        display: flex;
+        align-items: center;
+
+        .book-image {
+          width: 50px;
+          margin-right: 10px;
+        }
+
+        .book-details {
+          p {
+            margin: 0;
+          }
+
+          .authors {
+            color: #bbb;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .book-price,
+      .total-price {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .quantity-input {
+          width: 60px;
+          text-align: center;
+
+          border: none;
+          margin: 0;
+          font-size: 18px;
+
+          -webkit-appearance: textfield;
+          appearance: textfield;
+
+          line-height: 100%;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+
+        button {
+          width: 30px;
+          height: 30px;
+          border: none;
+          background-color: #eee;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #ddd;
+          }
+
+          &:first-of-type {
+            border-right: 1px solid #ddd; 
+          }
+
+          &:last-of-type {
+            border-left: 1px solid #ddd; 
+          }
+        }
+      }
+    }
+  }
+
+  .cart-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
+    .summary-details {
+      font-size: 18px;
+      margin-bottom: 20px; 
+    }
+
+    .checkout-button {
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+}

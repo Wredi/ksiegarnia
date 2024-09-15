@@ -18,4 +18,8 @@ router.get('/book', (req, res) => {
     res.sendFile("book.html", {root: htmlDirPath});
 })
 
+router.get('/cart', (req, res) => {
+    res.sendFile("cart.html", {root: htmlDirPath});
+})
+
 module.exports = router;

@@ -48,15 +48,25 @@
                     <span class="read-more">(czytaj więcej)</span>
                 </p>
             </div>
-            <div class="book-pricing">
-                <button class="price-button active">Nowy <span>54zł</span></button>
-                <button class="price-button">Lekko używany <span>32zł</span></button>
-                <button class="price-button">Mocno używany <span>12zł</span></button>
-                <div class="total-price">
-                    <h2>54zł</h2>
-                    <button class="add-to-cart">Dodaj do koszyka</button>
-                </div>
+        <form method="POST" action="" class="book-pricing">
+            <label class="price-button">
+                <input type="radio" name="price" value="54" checked>
+                <span>Nowy</span> <span>54zł</span>
+            </label>
+            <label class="price-button">
+                <input type="radio" name="price" value="32">
+                <span>Lekko używany</span> <span>32zł</span>
+            </label>
+            <label class="price-button">
+                <input type="radio" name="price" value="12">
+                <span>Mocno używany</span> <span>12zł</span>
+            </label>
+
+            <div class="total-price">
+                <h2>54zł</h2>
+                <button type="submit" class="add-to-cart">Dodaj do koszyka</button>
             </div>
+        </form>
         </div>
 
         <div class="offers">
