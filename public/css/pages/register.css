@@ -1,0 +1,156 @@
+.page {
+  margin: auto;
+  max-width: 1500px;
+}
+.page > * {
+  margin: 10px;
+}
+
+.material-icons {
+  font-size: 30px;
+}
+
+@media (450px <= width <= 600px) {
+  .user-panel p, .cart p {
+    display: none;
+  }
+}
+@media (width < 450px) {
+  .navbar {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: "logo user cart" "search search search";
+  }
+  .user-panel {
+    justify-self: end;
+  }
+  .cart {
+    justify-self: end;
+  }
+}
+.navbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas: "logo search user cart";
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  grid-area: logo;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  grid-area: search;
+}
+.search input {
+  flex-grow: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+}
+.search .material-icons {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.user-panel, .cart {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: black;
+  justify-self: end;
+}
+
+.user-panel {
+  grid-area: user;
+}
+
+.cart {
+  grid-area: cart;
+}
+
+legend {
+  font-size: 1.6rem;
+}
+
+.form-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid #dddddd;
+}
+
+.form-control-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-control {
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+input.form-control {
+  border: 1px solid #D6D9DC;
+  border-radius: 3px;
+  padding: 0.6rem;
+}
+
+input.form-control:focus {
+  outline: #00b4d8 2px solid;
+}
+
+.form-control-submit {
+  background-color: #0077b6;
+  color: #fff;
+  border: none;
+  padding: 0.6rem;
+  cursor: pointer;
+}
+
+.form-control-submit:hover,
+.form-control-submit:focus {
+  background: #03045e;
+}
+
+.validation-message {
+  color: #ff0033;
+}
+
+.form-control.invalid {
+  border: 2px solid #ff0033;
+}
+
+.form-control.valid {
+  border: 2px solid #04aa6d;
+}
+
+.register-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.form {
+  width: 600px;
+  background-color: #f8f8f8;
+}
+
+/*# sourceMappingURL=register.css.map */

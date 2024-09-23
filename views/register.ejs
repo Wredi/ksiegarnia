@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarejestruj się</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+    <link rel="stylesheet" href="/css/pages/register.css" class="css">
+</head>
+<body>
+    <div class="page">
+
+        <%- include('partials/navigation', { user: user }) %>
+
+        <div class="register-box">
+            <% if (typeof successMessage !== 'undefined') { %>
+                <div class="alert alert-success" role="alert">
+                    <%= successMessage %>
+                </div>
+            <% } %>
+            <form method="post" class="form">
+                <fieldset class="form-fieldset">
+                  <legend>Rejestracja</legend>
+                  <div class="form-control-div">
+                    <label for="email" class="form-control">Email</label>
+                    <input type="text" id="email" name="email" class="form-control" 
+                    aria-describedby="email-validation" pattern="^(.+)@(.+)$" required>
+                    <span id="email-validation" aria-live="assertive" class="validation-message"></span>
+                  </div>
+                  <div class="form-control-div">
+                    <label for="name" class="form-control">Imię</label>
+                    <input type="text" id="name" name="name" class="form-control" 
+                    aria-describedby="name-validation" required>
+                    <span id="name-validation" aria-live="assertive" class="validation-message"></span>
+                  </div>
+                  <div class="form-control-div">
+                    <label for="password" class="form-control">Hasło</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                    <span id="password-validation" aria-live="assertive" class="validation-message"></span>
+                  </div>
+                  <div class="form-control-div">
+                    <label for="confirm-password" class="form-control">Powtórz hasło</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
+                    <span id="confirm-password-validation" aria-live="assertive" class="validation-message"></span>
+                  </div>
+                  <div class="form-control-div">
+                    <button type="submit" class="form-control form-control-submit">Zarejestruj się</button>
+                  </div>
+                  <% if (typeof errorMessage !== 'undefined') { %>
+                      <div class="alert alert-error" role="alert">
+                          <%= errorMessage %>
+                      </div>
+                  <% } %>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <script src="/scripts/form-validator.js"></script>
+    <script>
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('email-validation');
+
+        const name = document.getElementById('name');
+        const nameError = document.getElementById('name-validation');
+
+        const password = document.getElementById('password');
+        const passwordError = document.getElementById('password-validation');
+
+        const passwordConfirm = document.getElementById('confirm-password');
+        const passwordConfirmError = document.getElementById('confirm-password-validation');
+
+        const VALUE_MISSING_MSG = "To miejsce nie może być puste";
+
+        registerValidator(email, emailError, {
+          valueMissing: VALUE_MISSING_MSG,
+          patternMismatch: 'E-mail musi być w odpowiednim formacie (np. hi@gmail.com)',
+        });
+
+        registerValidator(name, nameError, {
+          valueMissing: VALUE_MISSING_MSG,
+        });
+
+        registerValidator(password, passwordError, {
+          valueMissing: VALUE_MISSING_MSG,
+        }, () => {
+            if (passwordConfirm.value == "") {
+                return false;
+            }
+
+            if (password.value !== passwordConfirm.value) {
+              passwordConfirmError.textContent = 'Hasła muszą się zgadzać';
+              markElementInvalid(passwordConfirm);
+            }
+
+            return false;
+        });
+
+        registerValidator(passwordConfirm, passwordConfirmError, {
+          valueMissing: VALUE_MISSING_MSG,
+        }, () => {
+          if (password.value !== passwordConfirm.value) {
+            passwordConfirmError.textContent = 'Hasła muszą się zgadzać';
+            return true;
+          }
+
+          return false;
+        });
+    </script>
+</body>
+</html>

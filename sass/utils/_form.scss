@@ -1,0 +1,55 @@
+legend{
+  font-size: 1.6rem;
+}
+
+.form-fieldset{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid #dddddd;
+}
+
+.form-control-div{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-control{
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+input.form-control{
+  border: 1px solid #D6D9DC;
+  border-radius: 3px;
+  padding: 0.6rem;
+}
+
+input.form-control:focus{
+  outline: #00b4d8 2px solid;
+}
+
+.form-control-submit{
+  background-color: #0077b6;
+  color: #fff;
+  border: none;
+  padding: 0.6rem;
+  cursor: pointer;
+}
+
+.form-control-submit:hover,
+.form-control-submit:focus {
+  background: #03045e;
+}
+
+.validation-message{
+  color: #ff0033;
+}
+
+.form-control.invalid{
+  border: 2px solid #ff0033;
+}
+
+.form-control.valid{
+  border: 2px solid #04aa6d;
+}

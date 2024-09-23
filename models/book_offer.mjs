@@ -18,3 +18,5 @@ class BookPriceOption {
         this.price = price;
     }
 }
+
+export { BookOffer, BookPriceOption };

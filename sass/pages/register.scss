@@ -1,0 +1,15 @@
+@use '../base/base';
+@use '../layout/navigation';
+@use '../utils/form';
+
+.register-box{
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.form {
+  width: 600px;
+  background-color: #f8f8f8;
+}
+

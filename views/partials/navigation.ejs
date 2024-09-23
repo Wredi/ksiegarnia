@@ -1,0 +1,17 @@
+<nav class="navbar">
+    <a href="#" class="logo">LOGO</a>
+    <div class="search">
+        <input type="text" placeholder="Search...">
+        <span class="material-icons material-symbols-outlined">search</span>
+    </div>
+    
+    <a href="<%= user ? '/logout' : '/login' %>" class="user-panel">
+        <span class="material-icons material-symbols-outlined">person</span>
+        <p><%= user ? 'Wyloguj się' : 'Zaloguj się' %></p>  
+    </a>
+    
+    <a href="#" class="cart">
+        <span class="material-icons material-symbols-outlined">shopping_cart</span>
+        <p>Koszyk</p>
+    </a>
+</nav>

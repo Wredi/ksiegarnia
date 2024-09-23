@@ -1,6 +1,7 @@
 import { createPool } from 'mysql2/promise';
 import { readFileSync } from 'fs';
 import { resolve } from "path";
+import { User } from '../models/user.mjs';
 
 const __dirname = import.meta.dirname;
 
@@ -20,6 +21,38 @@ class DBHandler {
             });
         }catch(err){
             console.error(err);
+        }
+    }
+
+    async addUser(name, mail, passwordHash) {
+        try {
+            const query = `INSERT INTO user (name, mail, password_hash) VALUES (?, ?, ?)`;
+            const conn = await this.pool.getConnection();
+            await conn.query(query, [name, mail, passwordHash]);
+            conn.release();
+
+            console.log('User added successfully.');
+        } catch (error) {
+            console.error('Error adding user:', error);
+            throw error;
+        }
+    }
+
+    async findUserByEmail(mail) {
+        try {
+            const query = `SELECT * FROM user WHERE mail = ?`;
+            const conn = await this.pool.getConnection();
+            const [rows] = await conn.query(query, [mail]);
+            conn.release();
+
+            if(rows[0]) {
+                return new User(rows[0].id, rows[0].mail, rows[0].name, rows[0].password_hash);
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            throw error;
         }
     }
 
