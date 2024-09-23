@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= book.title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+    <link rel="stylesheet" href="/css/pages/book.css">
+</head>
+<body>
+    <div class="page">
+        <%- include('partials/navigation', { user: user }) %>
+
+        <div class="book-details">
+            <div class="book-image">
+                <img src="<%= '/images/' + book.image_path %>" alt="<%= book.title %>">
+            </div>
+            <div class="book-info">
+                <h1 class="book-title"><%= book.title %></h1>
+                <p class="book-authors"><%= book.authors %></p>
+                <p><strong>Wydawca:</strong> <%= book.publisher %></p>
+                <p><strong>Rok wydania:</strong> <%= book.year %></p>
+                <p><strong>Język:</strong> <%= book.language %></p>
+                <p class="book-description"><%= book.desc %></p>
+            </div>
+
+            <!-- Form to add book to cart -->
+            <form method="POST" action="/book/<%= book.id %>" class="book-pricing">
+                <div class="price-options">
+                    <% book.price_options.forEach(option => { %>
+                        <label class="price-button">
+                            <input type="radio" name="priceOptionId" value="<%= option.id %>" data-price="<%= option.price %>" <%= option.id === selectedPriceOptionId ? 'checked' : '' %> >
+                            <span><%= option.state %></span> <span><%= option.price %>zł</span>
+                        </label>
+                    <% }) %>
+                </div>
+
+                <div class="total-price">
+                    <h2 id="total-price"><%= selectedPrice %>zł</h2>
+                    <button type="submit" class="add-to-cart">Dodaj do koszyka</button>
+                </div>
+            </form>
+
+            <!-- Display success or error messages -->
+            <% if (message) { %>
+                <div class="alert alert-info"><%= message %></div>
+            <% } else if (errorMessage) { %>
+                <div class="alert alert-error"><%= errorMessage %></div>
+            <% } %>
+        </div>
+
+        <div class="description">
+            <h2>Opis</h2>
+            <p><%= book.desc %></p>
+        </div>
+    </div>
+
+    <script>
+        // Update total price based on selected option
+        const priceOptions = document.querySelectorAll('input[name="priceOptionId"]');
+        const totalPriceElement = document.getElementById('total-price');
+
+        priceOptions.forEach(option => {
+            option.addEventListener('change', function () {
+                totalPriceElement.textContent = this.dataset.price + 'zł';
+            });
+        });
+    </script>
+</body>
+</html>

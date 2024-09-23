@@ -28,9 +28,65 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/book', (req, res) => {
-    res.sendFile("book.html", {root: htmlDirPath});
-});
+router.route('/book/:id')
+    .get(async (req, res) => {
+        const bookId = req.params.id;
+        const user = getUserFromSession(req);  
+
+        try {
+            const book = await dbHandler.getBookWithPriceOptions(bookId);
+            
+            if (!book) {
+                return res.status(404).send("Book not found");
+            }
+
+            res.render('book', { 
+                book, 
+                user, 
+                selectedPriceOptionId: book.price_options[0].id, 
+                selectedPrice: book.price_options[0].price, 
+                message: null, 
+                errorMessage: null 
+            });
+        } catch (error) {
+            console.error("Error fetching book: ", error);
+            res.status(500).send("Internal Server Error");
+        }
+    })
+    .post(async (req, res) => {
+        const bookId = req.params.id;
+        const { priceOptionId } = req.body;
+        const user = getUserFromSession(req);  
+
+        const book = await dbHandler.getBookWithPriceOptions(bookId);
+        
+        if (!user) {
+            return res.render('book', { 
+                book: book, 
+                user: null, 
+                selectedPriceOptionId: book.price_options[0].id, 
+                selectedPrice: book.price_options[0].price, 
+                errorMessage: 'Musisz być zalogowany, aby dodać książkę do koszyka.', 
+                message: null 
+            });
+        }
+
+        try {
+            await dbHandler.addBookToCart(user.id, priceOptionId);
+
+            res.render('book', { 
+                book: book, 
+                user: user, 
+                selectedPriceOptionId: book.price_options[0].id, 
+                selectedPrice: book.price_options[0].price, 
+                message: 'Książka została dodana do koszyka!', 
+                errorMessage: null 
+            });
+        } catch (error) {
+            console.error("Error adding to cart: ", error);
+            res.status(500).send("Internal Server Error");
+        }
+    });
 
 router.get('/cart', (req, res) => {
     res.sendFile("cart.html", {root: htmlDirPath});
