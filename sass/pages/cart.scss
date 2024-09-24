@@ -20,11 +20,36 @@ input::-webkit-inner-spin-button {
 
     .cart-item {
       display: grid;
-      grid-template-columns: 2fr 1fr auto 1fr;
+      grid-template-columns: 2fr 1fr auto 1fr 0.5fr;
       align-items: center;
       padding: 10px;
       border-bottom: 1px solid #ddd; 
 
+      .delete-button {
+        margin: auto;
+        background-color: #ff6b6b;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          background-color: #ff5252;
+          box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        span {
+          font-size: 18px;
+          line-height: 1;
+        }
+      }
       .book-info {
         display: flex;
         align-items: center;
@@ -80,7 +105,7 @@ input::-webkit-inner-spin-button {
         }
 
 
-        button {
+        .quantity-control-button {
           width: 30px;
           height: 30px;
           border: none;

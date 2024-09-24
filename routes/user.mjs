@@ -70,4 +70,49 @@ userRouter.post('/register', async (req, res) => {
     }
 });
 
+userRouter.get('/cart', async (req, res) => {
+    const user = getUserFromSession(req);
+
+    try {
+        const cart = await dbHandler.getUserCart(user.id);
+        res.render('cart', { cart, user: user});
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+        res.status(500).send('Error loading cart');
+    }
+});
+
+userRouter.post('/cart/update-quantity', async (req, res) => {
+    const user = getUserFromSession(req);
+    const userId = user.id;
+
+    const { bookOptionId, quantity } = req.body;
+
+    try {
+        await dbHandler.updateCartItemQuantity(userId, bookOptionId, quantity);
+
+        const updatedCart = await dbHandler.getUserCart(userId);
+        res.json({ success: true, cart: updatedCart });
+    } catch (error) {
+        console.error('Error updating cart item quantity:', error);
+        res.status(500).json({ success: false, message: 'Error updating quantity' });
+    }
+});
+
+userRouter.post('/cart/delete-item', async (req, res) => {
+    const user = getUserFromSession(req);
+    const userId = user.id;
+    const { bookOptionId } = req.body;
+
+    try {
+        await dbHandler.deleteCartItem(userId, bookOptionId);
+
+        const updatedCart = await dbHandler.getUserCart(userId);
+        res.json({ success: true, cart: updatedCart });
+    } catch (error) {
+        console.error('Error deleting cart item:', error);
+        res.status(500).json({ success: false, message: 'Error deleting item' });
+    }
+});
+
 export default userRouter;

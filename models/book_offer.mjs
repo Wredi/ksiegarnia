@@ -20,4 +20,19 @@ class BookPriceOption {
     }
 }
 
-export { BookOffer, BookPriceOption };
+class BookFilter {
+    constructor(filter_name, filter_display_name, items) {
+        this.filter_name = filter_name;
+        this.filter_display_name = filter_display_name;
+        this.items = items;
+    }
+}
+
+class BookFilterItem {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+export { BookOffer, BookPriceOption, BookFilter, BookFilterItem };

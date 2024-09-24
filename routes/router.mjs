@@ -19,9 +19,10 @@ router.get('/', async (req, res) => {
         const bookOffers = await dbHandler.getBookOffers(
             params.search, params.category, params.language, params.state
         );
+        const filters = await dbHandler.getBookFilters();
         
         const user = getUserFromSession(req);  
-        res.render('home', { books: bookOffers, user });
+        res.render('home', { books: bookOffers, filters: filters, user });
     } catch (error) {
         console.error("Error: ", error);
         res.status(500).send("Internal Server Error");
@@ -87,9 +88,5 @@ router.route('/book/:id')
             res.status(500).send("Internal Server Error");
         }
     });
-
-router.get('/cart', (req, res) => {
-    res.sendFile("cart.html", {root: htmlDirPath});
-});
 
 export default router;

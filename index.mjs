@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import bodyParser from 'body-parser';
 
 import router from "./routes/router.mjs";
 import userRouter from "./routes/user.mjs";
@@ -43,6 +44,7 @@ if(process.env.INIT){
         cookie: { secure: false }
     }));
     app.use(express.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
 
     app.use('/', router);
     app.use('/', userRouter);
