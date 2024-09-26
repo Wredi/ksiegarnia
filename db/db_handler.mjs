@@ -71,14 +71,41 @@ class DBHandler {
         const conn = await this.pool.getConnection();
 
         const filters = [
-            {name: "category", display_name: "Kategoria"},
-            {name: "language", display_name: "Język"},
-            {name: "state", display_name: "Stan"}
+            { name: "category", display_name: "Kategoria" },
+            { name: "language", display_name: "Język" },
+            { name: "state", display_name: "Stan" }
         ];
 
+        const getCategoryItems = async () => {
+            const [rows] = await conn.query(`SELECT * FROM category`);
+            
+            const categoryMap = new Map();
+
+            const parentCategories = rows.filter(row => row.parent_category === null);
+            
+            parentCategories.forEach(row => {
+                categoryMap.set(row.id, new BookFilterItem(row.id, row.name, []));
+            });
+
+            rows.forEach(row => {
+                if (row.parent_category) {
+                    const parentItem = categoryMap.get(row.parent_category);
+                    if (parentItem) {
+                        parentItem.child_items.push(new BookFilterItem(row.id, row.name, []));
+                    }
+                }
+            });
+
+            return [...categoryMap.values()];
+        };
+
         const getItemsForFilter = async (filter) => {
+            if (filter.name === "category") {
+                return getCategoryItems();
+            }
+
             const [rows] = await conn.query(`SELECT * FROM ${filter.name}`);
-            return rows.map(i => new BookFilterItem(i.id, i.name));
+            return rows.map(i => new BookFilterItem(i.id, i.name, []));
         };
 
         const result = await Promise.all(filters.map(async filter => {
@@ -364,8 +391,8 @@ class DBHandler {
                 params.push(`%${search_query}%`);
             }
             if (category_id) {
-                query += ` AND b.category_id = ?`;
-                params.push(category_id);
+                query += ` AND (b.category_id = ? OR c.parent_category = ?)`;
+                params.push(category_id, category_id);
             }
             if (lang_id) {
                 query += ` AND b.language_id = ?`;

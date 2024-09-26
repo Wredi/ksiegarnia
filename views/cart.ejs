@@ -11,41 +11,43 @@
     <div class="page">
         <%- include('partials/navigation', { user: user }) %>
 
-        <div class="cart-container">
-            <div class="loading-overlay" style="display: none;">Loading...</div>
-            <div class="cart-items">
-                <% cart.books.forEach(book => { %>
-                <div class="cart-item">
-                    <div class="book-info">
-                        <img src="/images/magic_world.jpg" alt="Book Cover" class="book-image" />
-                        <div class="book-details">
-                            <p><%= book.title %></p>
-                            <p class="authors"><%= book.authors %></p>
-                            <p class="authors">Stan: <%= book.state %></p>
+        <div class="main-container">
+            <div class="loading-overlay" style="display: none;"><p>Loading...</p></div>
+            <div class="cart-container">
+                <div class="cart-items">
+                    <% cart.books.forEach(book => { %>
+                    <div class="cart-item">
+                        <div class="book-info">
+                            <img src="/images/magic_world.jpg" alt="Book Cover" class="book-image" />
+                            <div class="book-details">
+                                <p><%= book.title %></p>
+                                <p class="authors"><%= book.authors %></p>
+                                <p class="authors">Stan: <%= book.state %></p>
+                            </div>
                         </div>
+                        <div class="book-price">
+                            <p><%= book.price %> zł</p>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="decrement quantity-control-button" data-book-id="<%= book.option_id %>">-</button>
+                            <input type="number" class="quantity-input" value="<%= book.quantity %>" data-book-id="<%= book.option_id %>" />
+                            <button class="increment quantity-control-button" data-book-id="<%= book.option_id %>">+</button>
+                        </div>
+                        <div class="total-price">
+                            <p><%= book.total_price %> zł</p>
+                        </div>
+                        <button class="delete-button" data-book-id="<%= book.option_id %>"><span class="material-symbols-outlined">close</span></button>
                     </div>
-                    <div class="book-price">
-                        <p><%= book.price %> zł</p>
-                    </div>
-                    <div class="quantity-control">
-                        <button class="decrement quantity-control-button" data-book-id="<%= book.option_id %>">-</button>
-                        <input type="number" class="quantity-input" value="<%= book.quantity %>" data-book-id="<%= book.option_id %>" />
-                        <button class="increment quantity-control-button" data-book-id="<%= book.option_id %>">+</button>
-                    </div>
-                    <div class="total-price">
-                        <p><%= book.total_price %> zł</p>
-                    </div>
-                    <button class="delete-button" data-book-id="<%= book.option_id %>"><span class="material-symbols-outlined">close</span></button>
+                    <% }) %>
                 </div>
-                <% }) %>
-            </div>
-            <div class="cart-summary">
-                <div class="summary-details">
-                    <p>Sum: <%= cart.sum %> zł</p>
-                    <p>Discount: <%= cart.discount %> zł</p>
-                    <p>Total: <%= cart.total %> zł</p>
+                <div class="cart-summary">
+                    <div class="summary-details">
+                        <p>Sum: <%= cart.sum %> zł</p>
+                        <p>Discount: <%= cart.discount %> zł</p>
+                        <p>Total: <%= cart.total %> zł</p>
+                    </div>
+                    <button class="checkout-button">Przejdź do płatności</button>
                 </div>
-                <button class="checkout-button">Przejdź do płatności</button>
             </div>
         </div>
     </div>

@@ -78,12 +78,9 @@
   margin-bottom: 5px;
 }
 
-.filter-list { list-style: none; 
+.filter-list { 
+  list-style: none; 
   padding: 0;
-}
-
-.filter-item {
-  margin-bottom: 5px;
 }
 
 .filter-link {
@@ -99,4 +96,48 @@
 .filter-count {
   color: gray; 
   font-size: 0.9em;
+}
+
+.filter-item {
+  margin-bottom: 5px;
+  position: relative; 
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 12px;
+  padding: 0;
+  color: black;
+}
+
+.child-filter-list {
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.child-filter-list.hidden {
+  display: none;
+}
+
+.filter-link {
+  text-decoration: underline;
+  color: black;
+  cursor: pointer;
+}
+
+.filter-link::before {
+  content: "> ";
+}
+
+.filter-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.choosen-filter {
+  color: red;
 }

@@ -29,9 +29,10 @@ class BookFilter {
 }
 
 class BookFilterItem {
-    constructor(id, name) {
+    constructor(id, name, child_items) {
         this.id = id;
         this.name = name;
+        this.child_items = child_items;
     }
 }
 

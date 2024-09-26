@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingOverlay = document.querySelector('.loading-overlay');
 
     const showLoading = () => {
+        //cartContainer.style.opacity = "0.5";
         loadingOverlay.style.display = 'block';
     };
 
     const hideLoading = () => {
+        //cartContainer.style.opacity = "1";
         loadingOverlay.style.display = 'none';
     };
 

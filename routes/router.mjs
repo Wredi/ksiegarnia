@@ -9,7 +9,6 @@ const router = express.Router();
 const __dirname = import.meta.dirname;
 let parentDirPath = resolve(__dirname, '..');
 const publicDirPath = parentDirPath + "/public";
-const htmlDirPath = parentDirPath + "/views";
 
 router.use(express.static(publicDirPath));
 
@@ -21,8 +20,13 @@ router.get('/', async (req, res) => {
         );
         const filters = await dbHandler.getBookFilters();
         
+        const choosenFilters = {
+            category: params.category, 
+            language: params.language, 
+            state: params.state
+        };
         const user = getUserFromSession(req);  
-        res.render('home', { books: bookOffers, filters: filters, user });
+        res.render('home', { books: bookOffers, filters: filters, choosenFilters: choosenFilters, user });
     } catch (error) {
         console.error("Error: ", error);
         res.status(500).send("Internal Server Error");
