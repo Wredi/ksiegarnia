@@ -25,8 +25,13 @@ router.get('/', async (req, res) => {
             language: params.language, 
             state: params.state
         };
+
         const user = getUserFromSession(req);  
-        res.render('home', { books: bookOffers, filters: filters, choosenFilters: choosenFilters, user });
+        res.render('home', { 
+            books: bookOffers, 
+            filters: filters, choosenFilters: choosenFilters, 
+            searchPhrase: params.search, user 
+        });
     } catch (error) {
         console.error("Error: ", error);
         res.status(500).send("Internal Server Error");

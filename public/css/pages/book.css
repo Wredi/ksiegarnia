@@ -50,21 +50,20 @@
   grid-area: logo;
 }
 
-.search {
+.search > form {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   border: 1px solid #ddd;
   border-radius: 5px;
-  overflow: hidden;
   grid-area: search;
 }
-.search input {
+.search > form input {
   flex-grow: 1;
-  padding: 8px;
   border: none;
   outline: none;
+  font-size: 18px;
 }
-.search .material-icons {
+.search > form .material-icons {
   padding: 8px;
   cursor: pointer;
 }

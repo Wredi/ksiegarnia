@@ -68,7 +68,9 @@
                     <% }) %>
                 </div>
             <div class="right-content">
-                <h3>Wyniki dla ...</h3>
+                <% if (searchPhrase) { %>
+                    <h3>Wyniki dla: <em><%= searchPhrase %></em></h3>
+                <% } %>
                 <div class="book-container">
                     <% books.forEach(book => { %>
                         <a href="/book/<%= book.id %>">
