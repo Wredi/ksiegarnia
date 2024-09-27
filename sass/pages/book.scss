@@ -72,6 +72,10 @@
                 left: -9999px;
             }
 
+            input[type="radio"]:disabled {
+                opacity: 0.5;
+            }
+
             span {
                 font-weight: bold;
             }

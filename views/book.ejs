@@ -33,24 +33,22 @@
                 <p class="book-description"><%= book.desc %></p>
             </div>
 
-            <!-- Form to add book to cart -->
             <form method="POST" action="/book/<%= book.id %>" class="book-pricing">
                 <div class="price-options">
                     <% book.price_options.forEach(option => { %>
                         <label class="price-button">
-                            <input type="radio" name="priceOptionId" value="<%= option.id %>" data-price="<%= option.price %>" <%= option.id === selectedPriceOptionId ? 'checked' : '' %> >
-                            <span><%= option.state %></span> <span><%= option.price %>zł</span>
+                            <input type="radio" name="priceOptionId" value="<%= option.id %>" data-price="<%= option.price %>" <%= option.count == 0 ? 'disabled' : ''%> <%= option.id === selectedPriceOptionId ? 'checked' : '' %> >
+                            <span><%= option.state %></span> <span><%= option.price %>zł</span> <span><%= option.count %> sztuk</span>
                         </label>
                     <% }) %>
                 </div>
 
                 <div class="total-price">
-                    <h2 id="total-price"><%= selectedPrice %>zł</h2>
-                    <button type="submit" class="add-to-cart">Dodaj do koszyka</button>
+                    <h2 id="total-price"><%= selectedPriceOptionId == null ? 'Wyprzedany' : book.price_options.find(e => e.id == selectedPriceOptionId).price + 'zł' %></h2>
+                    <button type="submit" class="add-to-cart" <%= selectedPriceOptionId == null ? 'disabled' : '' %>>Dodaj do koszyka</button>
                 </div>
             </form>
 
-            <!-- Display success or error messages -->
             <% if (message) { %>
                 <div class="alert alert-info"><%= message %></div>
             <% } else if (errorMessage) { %>
@@ -65,7 +63,6 @@
     </div>
 
     <script>
-        // Update total price based on selected option
         const priceOptions = document.querySelectorAll('input[name="priceOptionId"]');
         const totalPriceElement = document.getElementById('total-price');
 

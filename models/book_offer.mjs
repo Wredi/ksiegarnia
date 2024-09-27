@@ -13,10 +13,11 @@ class BookOffer {
 }
 
 class BookPriceOption {
-    constructor(id, state, price) {
+    constructor(id, state, price, count) {
         this.id = id;
         this.state = state;
         this.price = price;
+        this.count = count;
     }
 }
 

@@ -148,6 +148,9 @@
   position: absolute;
   left: -9999px;
 }
+.book-details .book-pricing .price-button input[type=radio]:disabled {
+  opacity: 0.5;
+}
 .book-details .book-pricing .price-button span {
   font-weight: bold;
 }

@@ -78,9 +78,11 @@
                                 <img src="<%= "/images/" + book.image_path %>" alt="<%= book.title %>" class="src">
                                 <p class="book-title"><%= book.title %></p>
                                 <p class="book-authors"><%= book.authors %></p>
-                                <p>
+                                <p class="book-count">Ilość: <%= book.price_options.reduce((sum, a) => sum + a.count, 0) %></p>
+                                <p class="book-price">
                                     <!-- Find the cheapest price option -->
-                                    <%= Math.min(...book.price_options.map(option => option.price)) %>zł
+                                    <% const cheapestOption = Math.min(...book.price_options.filter(option => option.count > 0).map(option => option.price)); %>
+                                    <%= cheapestOption !== Infinity ? cheapestOption + 'zł' : 'Wyprzedany!' %>
                                 </p>
                             </div>
                         </a>

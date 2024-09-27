@@ -127,7 +127,7 @@ class DBHandler {
             WHERE b.id = ?
         `;
         const priceOptionsQuery = `
-            SELECT bo.id, s.name AS state, bo.price
+            SELECT bo.id, s.name AS state, bo.price, bo.count
             FROM book_option bo
             LEFT JOIN state s ON bo.state_id = s.id
             WHERE bo.book_id = ?
@@ -140,7 +140,7 @@ class DBHandler {
         if (bookData.length === 0) return null;
 
         const book = bookData[0];
-        const bookPriceOptions = priceOptions.map(option => new BookPriceOption(option.id, option.state, option.price));
+        const bookPriceOptions = priceOptions.map(option => new BookPriceOption(option.id, option.state, option.price, option.count));
 
         conn.release();
         
@@ -372,7 +372,7 @@ class DBHandler {
 
             let query = `
                 SELECT 
-                    b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, bo.price, 
+                    b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, bo.price, bo.count,
                     l.name as language, s.name as state,
                     bo.state_id as state_id
                 FROM book b
@@ -427,7 +427,8 @@ class DBHandler {
                     new BookPriceOption(
                         row.state_id,
                         row.state,
-                        row.price
+                        row.price,
+                        row.count
                     )
                 );
 

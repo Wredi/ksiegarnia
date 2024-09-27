@@ -137,10 +137,15 @@
   text-overflow: ellipsis;
 }
 .book-offert p {
-  grid-row: 4;
   font-size: 14px;
   color: #333;
   margin: 0;
+}
+.book-offert .book-price {
+  grid-row: 4;
+}
+.book-offert .book-count {
+  grid-row: 5;
 }
 .book-offert:hover {
   transform: scale(1.03);

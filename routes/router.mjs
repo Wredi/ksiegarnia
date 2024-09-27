@@ -38,6 +38,11 @@ router.get('/', async (req, res) => {
     }
 });
 
+function getPriceOptionId(book) {
+    const element = book.price_options.find(o => o.count > 0);
+    return element === undefined ? null : element.id;
+}
+
 router.route('/book/:id')
     .get(async (req, res) => {
         const bookId = req.params.id;
@@ -53,8 +58,7 @@ router.route('/book/:id')
             res.render('book', { 
                 book, 
                 user, 
-                selectedPriceOptionId: book.price_options[0].id, 
-                selectedPrice: book.price_options[0].price, 
+                selectedPriceOptionId: getPriceOptionId(book), 
                 message: null, 
                 errorMessage: null 
             });
@@ -74,8 +78,7 @@ router.route('/book/:id')
             return res.render('book', { 
                 book: book, 
                 user: null, 
-                selectedPriceOptionId: book.price_options[0].id, 
-                selectedPrice: book.price_options[0].price, 
+                selectedPriceOptionId: getPriceOptionId(book), 
                 errorMessage: 'Musisz być zalogowany, aby dodać książkę do koszyka.', 
                 message: null 
             });
@@ -87,8 +90,7 @@ router.route('/book/:id')
             res.render('book', { 
                 book: book, 
                 user: user, 
-                selectedPriceOptionId: book.price_options[0].id, 
-                selectedPrice: book.price_options[0].price, 
+                selectedPriceOptionId: getPriceOptionId(book), 
                 message: 'Książka została dodana do koszyka!', 
                 errorMessage: null 
             });
