@@ -4,8 +4,7 @@ CREATE TABLE IF NOT EXISTS volume (
 );
 
 CREATE TABLE IF NOT EXISTS language (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS state (
@@ -57,7 +56,7 @@ CREATE TABLE IF NOT EXISTS cart_session (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     discount_percent DECIMAL(5, 2),
-    total DECIMAL(10, 2),
+    sum DECIMAL(10, 2),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 

@@ -85,145 +85,101 @@
   grid-area: cart;
 }
 
-.content {
-  display: flex;
-  gap: 20px;
+.welcome-banner {
+  background-image: url("/images/banner.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+}
+.welcome-banner .welcome-text {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.welcome-banner .welcome-text h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+.welcome-banner .welcome-text p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+.welcome-banner .welcome-text .btn {
+  background-color: #f8b400;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.welcome-banner .welcome-text .btn:hover {
+  background-color: #d99a00;
 }
 
-.right-content {
-  flex-grow: 1;
+.latest-books {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
 }
-
-.book-container {
+.latest-books h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+.latest-books .book-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
-
-.book-offert {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  grid-template-columns: 1fr;
-  gap: 10px;
+.latest-books .book-container .book-card {
+  background-color: white;
   padding: 15px;
+  text-align: center;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
-  text-align: center;
 }
-.book-offert img {
-  grid-row: 1;
+.latest-books .book-container .book-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.latest-books .book-container .book-card .book-image {
   width: 100%;
-  height: 200px;
+  height: 250px;
   object-fit: contain;
   border-radius: 5px;
+  margin-bottom: 15px;
 }
-.book-offert .book-title {
-  grid-row: 2;
-  font-size: 16px;
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.book-offert .book-authors {
-  grid-row: 3;
-  font-size: 14px;
-  color: #555;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.book-offert p {
-  font-size: 14px;
-  color: #333;
-  margin: 0;
-}
-.book-offert .book-price {
-  grid-row: 4;
-}
-.book-offert .book-count {
-  grid-row: 5;
-}
-.book-offert:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-}
-
-.filter-container {
-  margin-bottom: 20px;
-}
-
-.filter-header {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.filter-list {
-  list-style: none;
-  padding: 0;
-}
-
-.filter-link {
-  text-decoration: underline;
-  color: black;
-  cursor: pointer;
-}
-
-.filter-link::before {
-  content: "> ";
-}
-
-.filter-count {
-  color: gray;
-  font-size: 0.9em;
-}
-
-.filter-item {
-  margin-bottom: 5px;
-  position: relative;
-}
-
-.dropdown-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-left: 5px;
-  font-size: 12px;
-  padding: 0;
-  color: black;
-}
-
-.child-filter-list {
-  list-style: none;
-  padding-left: 20px;
-  margin-top: 5px;
-}
-
-.child-filter-list.hidden {
-  display: none;
-}
-
-.filter-link {
-  text-decoration: underline;
-  color: black;
-  cursor: pointer;
-}
-
-.filter-link::before {
-  content: "> ";
-}
-
-.filter-header {
+.latest-books .book-container .book-card .book-title {
+  font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.latest-books .book-container .book-card .book-author {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+.latest-books .book-container .book-card .book-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f8b400;
 }
 
-.choosen-filter {
-  color: red;
+@media (max-width: 600px) {
+  .welcome-text h1 {
+    font-size: 2rem;
+  }
+  .welcome-text p {
+    font-size: 1rem;
+  }
+  .book-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 /*# sourceMappingURL=home.css.map */

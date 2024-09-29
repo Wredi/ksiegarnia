@@ -29,9 +29,23 @@
                             <p><%= book.price %> zł</p>
                         </div>
                         <div class="quantity-control">
-                            <button class="decrement quantity-control-button" data-book-id="<%= book.option_id %>">-</button>
-                            <input type="number" class="quantity-input" value="<%= book.quantity %>" data-book-id="<%= book.option_id %>" />
-                            <button class="increment quantity-control-button" data-book-id="<%= book.option_id %>">+</button>
+                            <button 
+                                class="decrement quantity-control-button" 
+                                data-book-id="<%= book.option_id %>"
+                                <%= book.quantity <= 1 ? 'disabled' : '' %>
+                            >-</button>
+                            <input 
+                                type="number" 
+                                class="quantity-input" 
+                                value="<%= book.quantity %>" 
+                                data-book-id="<%= book.option_id %>" 
+                                data-available-quantity="<%= book.available_quantity %>"
+                            />
+                            <button 
+                                class="increment quantity-control-button" 
+                                data-book-id="<%= book.option_id %>"
+                                <%= book.quantity >= book.available_quantity ? 'disabled' : '' %>
+                            >+</button>
                         </div>
                         <div class="total-price">
                             <p><%= book.total_price %> zł</p>
@@ -43,7 +57,7 @@
                 <div class="cart-summary">
                     <div class="summary-details">
                         <p>Sum: <%= cart.sum %> zł</p>
-                        <p>Discount: <%= cart.discount %> zł</p>
+                        <p>Discount: <%= cart.discount_sum %> zł (<%= cart.discount_percent %>%)</p>
                         <p>Total: <%= cart.total %> zł</p>
                     </div>
                     <button class="checkout-button">Przejdź do płatności</button>

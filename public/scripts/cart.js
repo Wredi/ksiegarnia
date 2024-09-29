@@ -5,12 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingOverlay = document.querySelector('.loading-overlay');
 
     const showLoading = () => {
-        //cartContainer.style.opacity = "0.5";
         loadingOverlay.style.display = 'block';
     };
 
     const hideLoading = () => {
-        //cartContainer.style.opacity = "1";
         loadingOverlay.style.display = 'none';
     };
 
@@ -32,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>${book.price} zł</p>
                 </div>
                 <div class="quantity-control">
-                    <button class="decrement quantity-control-button" data-book-id="${book.option_id}">-</button>
-                    <input type="number" class="quantity-input" value="${book.quantity}" data-book-id="${book.option_id}" />
-                    <button class="increment quantity-control-button" data-book-id="${book.option_id}">+</button>
+                    <button class="decrement quantity-control-button" data-book-id="${book.option_id}" ${book.quantity <= 1 ? 'disabled' : ''}>-</button>
+                    <input type="number" class="quantity-input" value="${book.quantity}" data-book-id="${book.option_id}" data-available-quantity="${book.available_quantity}" />
+                    <button class="increment quantity-control-button" data-book-id="${book.option_id}" ${book.quantity >= book.available_quantity ? 'disabled' : ''}>+</button>
                 </div>
                 <div class="total-price">
                     <p>${book.total_price} zł</p>
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         summaryDetails.innerHTML = `
             <p>Sum: ${cart.sum} zł</p>
-            <p>Discount: ${cart.discount} zł</p>
+            <p>Discount: ${cart.discount_sum} zł (${cart.discount_percent} %)</p>
             <p>Total: ${cart.total} zł</p>
         `;
         hideLoading();  
@@ -57,9 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const bookId = event.target.dataset.bookId;
             const quantityInput = document.querySelector(`input[data-book-id="${bookId}"]`);
             let newQuantity = parseInt(quantityInput.value);
+            const availableQuantity = parseInt(quantityInput.dataset.availableQuantity);
 
             if (event.target.classList.contains('increment')) {
-                newQuantity += 1;
+                if (newQuantity < availableQuantity) newQuantity += 1;
             } else if (event.target.classList.contains('decrement') && newQuantity > 1) {
                 newQuantity -= 1;
             }
@@ -111,4 +110,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    cartItems.addEventListener('blur', async (event) => {
+        if (event.target.classList.contains('quantity-input')) {
+            const bookId = event.target.dataset.bookId;
+            let newQuantity = parseInt(event.target.value);
+            const availableQuantity = parseInt(event.target.dataset.availableQuantity);
+
+            
+            if (newQuantity < 1) newQuantity = 1;
+            if (newQuantity > availableQuantity) newQuantity = availableQuantity;
+
+            event.target.value = newQuantity;
+
+            showLoading();
+
+            try {
+                const response = await fetch('/cart/update-quantity', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bookOptionId: bookId, quantity: newQuantity })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    updateCart(data.cart);
+                } else {
+                    alert('Error updating quantity.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating quantity.');
+            }
+        }
+    }, true);
 });

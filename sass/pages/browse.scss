@@ -1,0 +1,150 @@
+@use '../base/base';
+@use '../layout/navigation';
+
+.content{
+  display: flex;
+  gap: 20px;
+}
+
+.right-content {
+  flex-grow: 1;
+}
+
+.book-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px; 
+}
+
+.book-offert {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff;
+  text-align: center;
+
+  img {
+    grid-row: 1;
+    width: 100%;
+    height: 200px; 
+    object-fit: contain; 
+    border-radius: 5px;
+  }
+
+  .book-title {
+    grid-row: 2;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .book-authors {
+    grid-row: 3;
+    font-size: 14px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  p {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+  }
+
+  .book-price {
+    grid-row: 4;
+  }
+
+  .book-count {
+    grid-row: 5;
+  }
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
+}
+
+.filter-container {
+  margin-bottom: 20px; 
+}
+
+.filter-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.filter-list { 
+  list-style: none; 
+  padding: 0;
+}
+
+.filter-link {
+  text-decoration: underline; 
+  color: black;
+  cursor: pointer;
+}
+
+.filter-link::before {
+  content: "> "; 
+}
+
+.filter-count {
+  color: gray; 
+  font-size: 0.9em;
+}
+
+.filter-item {
+  margin-bottom: 5px;
+  position: relative; 
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 12px;
+  padding: 0;
+  color: black;
+}
+
+.child-filter-list {
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.child-filter-list.hidden {
+  display: none;
+}
+
+.filter-link {
+  text-decoration: underline;
+  color: black;
+  cursor: pointer;
+}
+
+.filter-link::before {
+  content: "> ";
+}
+
+.filter-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.choosen-filter {
+  color: red;
+}

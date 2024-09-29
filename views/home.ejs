@@ -14,89 +14,35 @@
           'opsz' 24
         }
     </style>
-    <link rel="stylesheet" href="/css/pages/home.css" class="css">
-    <script>
-        function addParameterToUrl(param, value) {
-            const url = new URL(window.location.href);
-            const currValue = url.searchParams.get(param);
-            if(value == currValue) {
-                url.searchParams.delete(param);
-            } else {
-                url.searchParams.set(param, value);
-            }
-            window.location.href = url.toString();
-        }
-    </script>
+    <link rel="stylesheet" href="/css/pages/home.css">
 </head>
 <body>
     <div class="page">
-
         <%- include('partials/navigation', { user: user }) %>
 
-        <div class="content">
-                <div class="filters">
-                    <% filters.forEach(filter => { %>
-                        <div class="filter-container">
-                            <div class="filter-header"><%=filter.filter_display_name%></div>
-                            <ul class="filter-list">
-                                <% filter.items.forEach(item => { %>
-                                    <li class="filter-item">
-                                        <a href="javascript:void(0)" onclick="addParameterToUrl('<%=filter.filter_name%>', '<%=item.id%>')" class="filter-link <%= choosenFilters[filter.filter_name] == item.id ? 'choosen-filter' : '' %>">
-                                            <%=item.name%>
-                                        </a>
-                                        <% if (item.child_items && item.child_items.length > 0) { %>
-                                            <% const isChildSelected = item.child_items.some(childItem => choosenFilters[filter.filter_name] == childItem.id); %>
-
-                                            <button class="dropdown-toggle" onclick="toggleDropdown(this)">
-                                                <%= isChildSelected ? '▲' : '▼' %>
-                                            </button>
-
-                                            <ul class="child-filter-list <%= isChildSelected ? '' : 'hidden' %>">
-                                                <% item.child_items.forEach(childItem => { %>
-                                                    <li class="filter-item">
-                                                        <a href="javascript:void(0)" onclick="addParameterToUrl('<%=filter.filter_name%>', '<%=childItem.id%>')" class="filter-link <%= choosenFilters[filter.filter_name] == childItem.id ? 'choosen-filter' : '' %>">
-                                                            <%= childItem.name %>
-                                                        </a>
-                                                    </li>
-                                                <% }) %>
-                                            </ul>
-                                        <% } %>
-                                    </li>
-                                <% }) %>
-                            </ul>
-                        </div>
-                    <% }) %>
-                </div>
-            <div class="right-content">
-                <% if (searchPhrase) { %>
-                    <h3>Wyniki dla: <em><%= searchPhrase %></em></h3>
-                <% } %>
-                <div class="book-container">
-                    <% books.forEach(book => { %>
-                        <a href="/book/<%= book.id %>">
-                            <div class="book-offert">
-                                <img src="<%= "/images/" + book.image_path %>" alt="<%= book.title %>" class="src">
-                                <p class="book-title"><%= book.title %></p>
-                                <p class="book-authors"><%= book.authors %></p>
-                                <p class="book-count">Ilość: <%= book.price_options.reduce((sum, a) => sum + a.count, 0) %></p>
-                                <p class="book-price">
-                                    <!-- Find the cheapest price option -->
-                                    <% const cheapestOption = Math.min(...book.price_options.filter(option => option.count > 0).map(option => option.price)); %>
-                                    <%= cheapestOption !== Infinity ? cheapestOption + 'zł' : 'Wyprzedany!' %>
-                                </p>
-                            </div>
-                        </a>
-                    <% }) %>
-                </div>
+        <section class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Witamy w naszej księgarni!</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget purus vitae ante iaculis elementum eget at felis. Nam tristique a sapien vel euismod. Donec non enim condimentum, dapibus arcu a, fermentum dolor.</p>
+                <a href="/browse" class="btn">Odkryj naszą kolekcję</a>
             </div>
-        </div>
+        </section>
+
+         <section class="latest-books">
+            <h2>Latest Arrivals</h2>
+            <div class="book-container">
+                <% recentBooks.forEach(book => { %>
+                    <div class="book-card">
+                        <a href="/book/<%= book.id %>">
+                            <img src="<%= "/images/" + book.image_path %>" alt="<%= book.title %>" class="book-image">
+                            <p class="book-title"><%= book.title %></p>
+                            <p class="book-author">by <%= book.authors %></p>
+                            <p class="book-price"><%= book.min_price %> zł</p>
+                        </a>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
     </div>
-    <script>
-        function toggleDropdown(button) {
-            const childList = button.nextElementSibling; 
-            childList.classList.toggle('hidden');
-            button.textContent = childList.classList.contains('hidden') ? '▼' : '▲'; 
-        }
-    </script>
 </body>
 </html>

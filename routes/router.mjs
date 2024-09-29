@@ -14,6 +14,22 @@ router.use(express.static(publicDirPath));
 
 router.get('/', async (req, res) => {
     try {
+        const bookOffers = await dbHandler.getBookViews(
+            null, null, null, null, 6
+        );
+        const user = getUserFromSession(req);
+        res.render('home', { 
+            user,
+            recentBooks: bookOffers
+        });
+    } catch (error) {
+        console.error("Error: ", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.get('/browse', async (req, res) => {
+    try {
         const params = qs.parse(req.query);  
         const bookOffers = await dbHandler.getBookOffers(
             params.search, params.category, params.language, params.state
@@ -27,7 +43,7 @@ router.get('/', async (req, res) => {
         };
 
         const user = getUserFromSession(req);  
-        res.render('home', { 
+        res.render('browse', { 
             books: bookOffers, 
             filters: filters, choosenFilters: choosenFilters, 
             searchPhrase: params.search, user 

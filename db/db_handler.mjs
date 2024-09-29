@@ -151,22 +151,22 @@ class DBHandler {
         const conn = await this.pool.getConnection();
 
         const totalQuery = `
-            SELECT SUM(bo.price * ci.quantity) AS total
+            SELECT SUM(bo.price * ci.quantity) AS sum
             FROM cart_item ci
             JOIN book_option bo ON ci.book_offer = bo.id
             JOIN cart_session cs ON ci.cart_session_id = cs.id
             WHERE cs.user_id = ?
         `;
-        const [[{ total }]] = await conn.query(totalQuery, [userId]);
+        const [[{ sum }]] = await conn.query(totalQuery, [userId]);
 
-        const discountPercent = total > 200 ? 10 : total > 100 ? 5 : 0;
+        const discountPercent = sum > 200 ? 10 : sum > 100 ? 5 : 0;
 
         const updateQuery = `
             UPDATE cart_session 
-            SET total = ?, discount_percent = ?
+            SET sum = ?, discount_percent = ?
             WHERE user_id = ?
         `;
-        await conn.query(updateQuery, [total || 0, discountPercent, userId]);
+        await conn.query(updateQuery, [sum || 0, discountPercent, userId]);
 
         conn.release();
     } 
@@ -196,8 +196,9 @@ class DBHandler {
         try {
             const updateQuery = `
                 UPDATE cart_item ci
+                JOIN book_option bo ON bo.id = ci.book_offer
                 JOIN cart_session cs ON ci.cart_session_id = cs.id
-                SET ci.quantity = ?
+                SET ci.quantity = LEAST(bo.count, ?)
                 WHERE cs.user_id = ? AND ci.book_offer = ?
             `;
 
@@ -257,7 +258,7 @@ class DBHandler {
         try {
             const bookDetailsQuery = `
                 SELECT bo.id AS option_id, b.title, b.authors, s.name as state, bo.price, ci.quantity,
-                       (bo.price * ci.quantity) AS total_price
+                       (bo.price * ci.quantity) AS total_price, bo.count as available_quantity
                 FROM cart_item ci
                 JOIN book_option bo ON ci.book_offer = bo.id
                 JOIN book b ON bo.book_id = b.id
@@ -275,21 +276,22 @@ class DBHandler {
                 book.state,
                 book.price,
                 book.quantity,
-                book.total_price
+                book.total_price,
+                book.available_quantity
             ));
 
             const cartSessionQuery = `
-                SELECT total, discount_percent 
+                SELECT 
+                    sum, 
+                    discount_percent, 
+                    TRUNCATE((discount_percent / 100) * sum, 2) AS discount_sum,
+                    sum - (SELECT discount_sum) AS total
                 FROM cart_session 
                 WHERE user_id = ?
             `;
             const [[cartSession]] = await conn.query(cartSessionQuery, [userId]);
 
-            const sum = books.reduce((acc, book) => acc + book.total_price, 0);
-            const discount = (cartSession.discount_percent / 100) * sum;
-            const total = sum - discount;
-
-            return new Cart(sum, discount, total, books);
+            return new Cart(cartSession.sum, cartSession.discount_percent, cartSession.discount_sum, cartSession.total, books);
         } catch (error) {
             console.error('Error retrieving user cart:', error);
             throw error;
@@ -366,6 +368,65 @@ class DBHandler {
         }
     }
 
+    async getBookViews(search_query = null, category_id = null, lang_id = null, state_id = null, limit = null) {
+        try {
+            const conn = await this.pool.getConnection();
+
+            let query = `
+                SELECT 
+                    b.id, b.image_path, b.title, b.authors, MIN(bo.price) as min_price, SUM(bo.count) as total_count
+                FROM book b
+                LEFT JOIN book_option bo ON bo.book_id = b.id
+                LEFT JOIN category c ON b.category_id = c.id
+                WHERE bo.count > 0
+            `;
+
+            const params = [];
+
+            if (search_query) {
+                query += ` AND b.title LIKE ?`;
+                params.push(`%${search_query}%`);
+            }
+            if (category_id) {
+                query += ` AND (b.category_id = ? OR c.parent_category = ?)`;
+                params.push(category_id, category_id);
+            }
+            if (lang_id) {
+                query += ` AND b.language_id = ?`;
+                params.push(lang_id);
+            }
+            if (state_id) {
+                query += ` AND bo.state_id = ?`;
+                params.push(state_id);
+            }
+
+            query += ` GROUP BY b.id`;
+
+            if (limit) {
+                query += ` LIMIT ?`;
+                params.push(limit);
+            }
+
+            const [rows] = await conn.execute(query, params);
+
+            const bookViews = rows.map(row => ({
+                id: row.id,
+                image_path: row.image_path,
+                title: row.title,
+                authors: row.authors,
+                min_price: row.min_price,
+                total_count: row.total_count
+            }));
+
+            conn.release();
+            return bookViews;
+        } catch (error) {
+            console.error('Error fetching book views:', error);
+            throw error;
+        }
+}
+
+    //DEPRECATED: use getBookViews
     async getBookOffers(search_query = null, category_id = null, lang_id = null, state_id = null) {
         try {
             const conn = await this.pool.getConnection();
