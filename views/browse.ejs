@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
+    <title>Browse</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         .material-symbols-outlined {
@@ -26,6 +26,12 @@
             }
             window.location.href = url.toString();
         }
+
+        function toggleDropdown(button) {
+            const childList = button.nextElementSibling;
+            childList.classList.toggle('hidden');
+            button.textContent = childList.classList.contains('hidden') ? '▼' : '▲';
+        }
     </script>
 </head>
 <body>
@@ -34,39 +40,51 @@
         <%- include('partials/navigation', { user: user }) %>
 
         <div class="content">
-                <div class="filters">
-                    <% filters.forEach(filter => { %>
-                        <div class="filter-container">
-                            <div class="filter-header"><%=filter.filter_display_name%></div>
-                            <ul class="filter-list">
-                                <% filter.items.forEach(item => { %>
-                                    <li class="filter-item">
-                                        <a href="javascript:void(0)" onclick="addParameterToUrl('<%=filter.filter_name%>', '<%=item.id%>')" class="filter-link <%= choosenFilters[filter.filter_name] == item.id ? 'choosen-filter' : '' %>">
-                                            <%=item.name%>
-                                        </a>
-                                        <% if (item.child_items && item.child_items.length > 0) { %>
-                                            <% const isChildSelected = item.child_items.some(childItem => choosenFilters[filter.filter_name] == childItem.id); %>
-
-                                            <button class="dropdown-toggle" onclick="toggleDropdown(this)">
-                                                <%= isChildSelected ? '▲' : '▼' %>
-                                            </button>
-
-                                            <ul class="child-filter-list <%= isChildSelected ? '' : 'hidden' %>">
-                                                <% item.child_items.forEach(childItem => { %>
-                                                    <li class="filter-item">
-                                                        <a href="javascript:void(0)" onclick="addParameterToUrl('<%=filter.filter_name%>', '<%=childItem.id%>')" class="filter-link <%= choosenFilters[filter.filter_name] == childItem.id ? 'choosen-filter' : '' %>">
-                                                            <%= childItem.name %>
-                                                        </a>
-                                                    </li>
-                                                <% }) %>
-                                            </ul>
-                                        <% } %>
-                                    </li>
-                                <% }) %>
-                            </ul>
+            <div class="filters">
+                <% filters.forEach(filter => { %>
+                    <div class="filter-container">
+                        <div class="filter-header">
+                            <%= filter.filter_display_name %>
                         </div>
-                    <% }) %>
-                </div>
+                        <ul class="filter-list">
+                            <% filter.items.forEach(item => { %>
+                                <li class="filter-item">
+                                    <label class="filter-label">
+                                        <input type="checkbox" 
+                                               onclick="addParameterToUrl('<%= filter.filter_name %>', '<%= item.id %>')" 
+                                               <%= choosenFilters[filter.filter_name] == item.id ? 'checked' : '' %>
+                                        >
+                                        <span class="filter-link <%= choosenFilters[filter.filter_name] == item.id ? 'choosen-filter' : '' %>">
+                                            <%= item.name %>
+                                        </span>
+                                    </label>
+                                    <% if (item.child_items && item.child_items.length > 0) { %>
+                                        <% const isChildSelected = item.child_items.some(childItem => choosenFilters[filter.filter_name] == childItem.id); %>
+                                        <button class="dropdown-toggle" onclick="toggleDropdown(this)">
+                                            <%= isChildSelected ? '▲' : '▼' %>
+                                        </button>
+                                        <ul class="child-filter-list <%= isChildSelected ? '' : 'hidden' %>">
+                                            <% item.child_items.forEach(childItem => { %>
+                                                <li class="filter-item">
+                                                    <label class="filter-label">
+                                                        <input type="checkbox" 
+                                                               onclick="addParameterToUrl('<%= filter.filter_name %>', '<%= childItem.id %>')" 
+                                                               <%= choosenFilters[filter.filter_name] == childItem.id ? 'checked' : '' %>
+                                                        >
+                                                        <span class="filter-link <%= choosenFilters[filter.filter_name] == childItem.id ? 'choosen-filter' : '' %>">
+                                                            <%= childItem.name %>
+                                                        </span>
+                                                    </label>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    <% } %>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <% }) %>
+            </div>
             <div class="right-content">
                 <% if (searchPhrase) { %>
                     <h3>Wyniki dla: <em><%= searchPhrase %></em></h3>
@@ -80,7 +98,6 @@
                                 <p class="book-authors"><%= book.authors %></p>
                                 <p class="book-count">Ilość: <%= book.price_options.reduce((sum, a) => sum + a.count, 0) %></p>
                                 <p class="book-price">
-                                    <!-- Find the cheapest price option -->
                                     <% const cheapestOption = Math.min(...book.price_options.filter(option => option.count > 0).map(option => option.price)); %>
                                     <%= cheapestOption !== Infinity ? cheapestOption + 'zł' : 'Wyprzedany!' %>
                                 </p>
@@ -91,12 +108,5 @@
             </div>
         </div>
     </div>
-    <script>
-        function toggleDropdown(button) {
-            const childList = button.nextElementSibling; 
-            childList.classList.toggle('hidden');
-            button.textContent = childList.classList.contains('hidden') ? '▼' : '▲'; 
-        }
-    </script>
 </body>
 </html>

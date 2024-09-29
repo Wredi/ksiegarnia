@@ -114,14 +114,12 @@
   text-align: center;
 }
 .book-offert img {
-  grid-row: 1;
   width: 100%;
   height: 200px;
   object-fit: contain;
   border-radius: 5px;
 }
 .book-offert .book-title {
-  grid-row: 2;
   font-size: 16px;
   font-weight: bold;
   white-space: nowrap;
@@ -129,7 +127,6 @@
   text-overflow: ellipsis;
 }
 .book-offert .book-authors {
-  grid-row: 3;
   font-size: 14px;
   color: #555;
   white-space: nowrap;
@@ -141,16 +138,18 @@
   color: #333;
   margin: 0;
 }
-.book-offert .book-price {
-  grid-row: 4;
-}
-.book-offert .book-count {
-  grid-row: 5;
-}
 .book-offert:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+}
+
+.filters {
+  width: 250px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filter-container {
@@ -159,7 +158,8 @@
 
 .filter-header {
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
 .filter-list {
@@ -167,39 +167,47 @@
   padding: 0;
 }
 
-.filter-link {
-  text-decoration: underline;
-  color: black;
+.filter-item {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
-.filter-link::before {
-  content: "> ";
+.filter-link {
+  font-size: 14px;
+  color: #333;
+  margin-left: 8px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
-.filter-count {
-  color: gray;
-  font-size: 0.9em;
+.filter-link:hover {
+  color: #007bff;
 }
 
-.filter-item {
-  margin-bottom: 5px;
-  position: relative;
+.choosen-filter {
+  font-weight: bold;
+  color: #007bff;
 }
 
 .dropdown-toggle {
   background: none;
   border: none;
   cursor: pointer;
-  margin-left: 5px;
-  font-size: 12px;
-  padding: 0;
-  color: black;
+  font-size: 18px;
+  margin-left: auto;
+  color: #555;
+  line-height: 0;
 }
 
 .child-filter-list {
   list-style: none;
-  padding-left: 20px;
+  padding-left: 15px;
   margin-top: 5px;
 }
 
@@ -207,23 +215,16 @@
   display: none;
 }
 
-.filter-link {
-  text-decoration: underline;
-  color: black;
+input[type=checkbox] {
+  width: 16px;
+  height: 16px;
   cursor: pointer;
+  margin-right: 10px; /* Space between checkbox and filter name */
 }
 
-.filter-link::before {
-  content: "> ";
-}
-
-.filter-header {
+input[type=checkbox]:checked + .filter-link {
   font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.choosen-filter {
-  color: red;
+  color: #007bff; /* Highlight chosen filter when checked */
 }
 
 /*# sourceMappingURL=browse.css.map */
