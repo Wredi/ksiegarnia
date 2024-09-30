@@ -338,7 +338,7 @@ class DBHandler {
 
             const userId = result.insertId;
 
-            const insertSession = `INSERT INTO cart_session (user_id, discount_percent, total) VALUES (?, 0, 0)`;
+            const insertSession = `INSERT INTO cart_session (user_id, discount_percent, sum) VALUES (?, 0, 0)`;
             await conn.query(insertSession, [userId]);
 
             conn.release();

@@ -142,14 +142,75 @@ input.form-control:focus {
 }
 
 .register-box {
+  margin-top: 50px;
   display: flex;
   justify-content: center;
-  margin-top: 30px;
 }
 
 .form {
-  width: 600px;
-  background-color: #f8f8f8;
+  width: 400px;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form .form-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.form .form-fieldset legend {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.form .form-control-div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.form .form-control-div label {
+  font-weight: bold;
+  color: #333;
+}
+.form .form-control-div input.form-control {
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.form .form-control-div input.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+.form .form-control-div button.form-control-submit {
+  background-color: #e53935;
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.form .form-control-div button.form-control-submit:hover {
+  background-color: #d32f2f;
+}
+.form .form-control-div button.form-control-submit:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.form .alert-error {
+  background-color: #ffdddd;
+  color: #a94442;
+  padding: 10px;
+  border: 1px solid #a94442;
+  border-radius: 4px;
+  text-align: center;
 }
 
 /*# sourceMappingURL=register.css.map */

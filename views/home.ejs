@@ -29,17 +29,17 @@
         </section>
 
          <section class="latest-books">
-            <h2>Latest Arrivals</h2>
+            <h2>Ostatnie Pozycje</h2>
             <div class="book-container">
                 <% recentBooks.forEach(book => { %>
+                <a class="book-card-link" href="/book/<%= book.id %>">
                     <div class="book-card">
-                        <a href="/book/<%= book.id %>">
                             <img src="<%= "/images/" + book.image_path %>" alt="<%= book.title %>" class="book-image">
                             <p class="book-title"><%= book.title %></p>
-                            <p class="book-author">by <%= book.authors %></p>
+                            <p class="book-author"><%= book.authors %></p>
                             <p class="book-price"><%= book.min_price %> zł</p>
-                        </a>
                     </div>
+                </a>
                 <% }) %>
             </div>
         </section>

@@ -100,10 +100,13 @@
   gap: 20px;
 }
 
+.book-offert-link {
+  text-decoration: none;
+}
+
 .book-offert {
   display: grid;
   grid-template-rows: auto 1fr auto auto;
-  grid-template-columns: 1fr;
   gap: 10px;
   padding: 15px;
   border: 1px solid #ddd;
@@ -112,12 +115,50 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   background-color: #fff;
   text-align: center;
+  position: relative;
+}
+.book-offert:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+.book-offert.sold-out {
+  background-color: #f5f5f5;
+  color: #999;
+  box-shadow: none;
+  pointer-events: none;
+  opacity: 0.6;
 }
 .book-offert img {
   width: 100%;
   height: 200px;
   object-fit: contain;
   border-radius: 5px;
+}
+.book-offert .book-price {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+.book-offert .book-count {
+  font-size: 14px;
+  color: #555;
+}
+.book-offert.sold-out .book-price {
+  font-size: 16px;
+  font-weight: normal;
+  color: #d9534f;
+}
+.book-offert .sold-out-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #d9534f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
 }
 .book-offert .book-title {
   font-size: 16px;
@@ -137,11 +178,6 @@
   font-size: 14px;
   color: #333;
   margin: 0;
-}
-.book-offert:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
 }
 
 .filters {
@@ -219,12 +255,12 @@ input[type=checkbox] {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  margin-right: 10px; /* Space between checkbox and filter name */
+  margin-right: 10px;
 }
 
 input[type=checkbox]:checked + .filter-link {
   font-weight: bold;
-  color: #007bff; /* Highlight chosen filter when checked */
+  color: #007bff;
 }
 
 /*# sourceMappingURL=browse.css.map */

@@ -90,16 +90,26 @@
                     <h3>Wyniki dla: <em><%= searchPhrase %></em></h3>
                 <% } %>
                 <div class="book-container">
-                    <% books.forEach(book => { %>
-                        <a href="/book/<%= book.id %>">
-                            <div class="book-offert">
+                    <% books.forEach(book => { 
+                        const isSoldOut = book.price_options.reduce((sum, a) => sum + a.count, 0) === 0;
+                    %>
+                        <a class="book-offert-link" href="<%= !isSoldOut ? '/book/' + book.id : '#' %>">
+                            <div class="book-offert <%= isSoldOut ? 'sold-out' : '' %>">
+                                <% if (isSoldOut) { %>
+                                    <div class="sold-out-badge">Wyprzedany!</div>
+                                <% } %>
                                 <img src="<%= "/images/" + book.image_path %>" alt="<%= book.title %>" class="src">
                                 <p class="book-title"><%= book.title %></p>
                                 <p class="book-authors"><%= book.authors %></p>
                                 <p class="book-count">Ilość: <%= book.price_options.reduce((sum, a) => sum + a.count, 0) %></p>
                                 <p class="book-price">
-                                    <% const cheapestOption = Math.min(...book.price_options.filter(option => option.count > 0).map(option => option.price)); %>
-                                    <%= cheapestOption !== Infinity ? cheapestOption + 'zł' : 'Wyprzedany!' %>
+                                    <% if (!isSoldOut) {
+                                        const cheapestOption = Math.min(...book.price_options.filter(option => option.count > 0).map(option => option.price));
+                                        %>
+                                        <%= cheapestOption + 'zł' %>
+                                    <% } else { %>
+                                        Wyprzedany!
+                                    <% } %>
                                 </p>
                             </div>
                         </a>

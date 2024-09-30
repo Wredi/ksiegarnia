@@ -87,59 +87,61 @@ CREATE TABLE IF NOT EXISTS order_item (
     FOREIGN KEY (book_offer) REFERENCES book_offer(id)
 );*/
 
--- Insert into volume
 INSERT INTO volume (name) VALUES 
-('Volume 1'), 
-('Volume 2'), 
-('Volume 3'),
-('Special Edition Volume 1');
+('Tom 1'), 
+('Tom 2'), 
+('Tom 3'),
+('Specjalne Wydanie Tom 1');
 
--- Insert into language
 INSERT INTO language (name) VALUES 
-('English'), 
-('Spanish'), 
-('German'),
-('French'),
-('Italian');
+('Angielski'), 
+('Polski');
 
--- Insert into state
 INSERT INTO state (name) VALUES 
-('New'), 
-('Used'), 
-('Damaged');
+('Nowy'), 
+('Bardzo dobry'), 
+('Dobry'), 
+('Zniszczone');
 
--- Insert into category (with some subcategories)
 INSERT INTO category (name, parent_category) VALUES 
-('Fiction', NULL), 
-('Non-Fiction', NULL), 
-('Science Fiction', 1), 
-('Fantasy', 1), 
-('History', 2), 
-('Biography', 2);
+('Podręczniki', NULL), 
+('Katalogi', NULL), 
+('Informatory', NULL), 
+('Przewodniki', NULL), 
+('Atlasy', NULL), 
+('Albumy', NULL), 
+('Beletrystyka', NULL), 
+('Historia', NULL), 
+('I wojna światowa', 8),
+('II wojna światowa', 8),
+('Czasy starożytne', 8);
 
--- Insert more books
 INSERT INTO book (title, description, language_id, category_id, volume_id, year, publisher, authors, image_path) 
 VALUES 
-('The Time Traveler', 'A journey through time in a thrilling sci-fi adventure.', 1, 3, 1, 2015, 'Orbit', 'H.G. Wells', 'time_traveler.jpg'),
-('The Magic World', 'A fantasy land filled with magic and wonder.', 1, 4, 2, 2018, 'Penguin Random House', 'J.K. Rowling', 'magic_world.jpg'),
-('The Great War', 'A detailed account of World War II.', 1, 5, 3, 2020, 'Oxford University Press', 'John Keegan', 'great_war.jpg'),
-('La Vida de Picasso', 'Biography of Pablo Picasso.', 2, 6, 1, 2016, 'Editorial Planeta', 'José Martínez', 'picasso_bio.jpg'),
-('Cien Años de Soledad', 'A masterpiece of magical realism.', 2, 1, 2, 1967, 'HarperCollins', 'Gabriel García Márquez', 'one_hundred_years.jpg'),
-('Létranger', 'A classic existentialist novel.', 4, 1, 1, 1942, 'Gallimard', 'Albert Camus', 'stranger.jpg'),
-('Dune', 'A science fiction epic in the far future.', 1, 3, 3, 1965, 'Ace Books', 'Frank Herbert', 'dune.jpg'),
-('Il Nome della Rosa', 'A historical murder mystery set in a medieval monastery.', 5, 5, 1, 1980, 'Bompiani', 'Umberto Eco', 'name_of_rose.jpg');
+('W pustyni i w puszczy', 'Przygody polskiego chłopca i afrykańskiej dziewczynki w Afryce.', 2, 7, 1, 1911, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example1.jpg'),
+('Krzyżacy', 'Opowieść o wojnie Polski z Zakonem Krzyżackim.', 2, 7, 2, 1900, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example2.jpg'),
+('Przewodnik po Paryżu', 'Praktyczny przewodnik po atrakcjach i kulturze Paryża.', 2, 4, 1, 2021, 'Pascal', 'Piotr Kowalski', 'example3.jpg'),
+('Atlas geograficzny', 'Zbiór map świata, kontynentów i państw.', 2, 5, 1, 2019, 'Demart', 'Jan Nowak', 'example4.jpg'),
+('Historia starożytna', 'Książka opisująca starożytne cywilizacje, takie jak Egipt i Mezopotamia.', 2, 11, 1, 2015, 'Wydawnictwo Literackie', 'Tadeusz Zieliński', 'example5.jpg'),
+('Bitwa pod Verdun', 'Opowieść o jednej z najważniejszych bitew I wojny światowej.', 2, 9, 1, 2017, 'Znak', 'Jacek Kaczmarek', 'example6.jpg'),
+('II wojna światowa', 'Kompleksowa historia drugiej wojny światowej.', 2, 10, 2, 2005, 'Zysk i S-ka', 'Norman Davies', 'example7.jpg'),
+('Przewodnik po Włoszech', 'Wszystko, co trzeba wiedzieć o podróży po Włoszech.', 2, 4, 1, 2019, 'Pascal', 'Anna Nowak', 'example8.jpg'),
+('Album Sztuki Renesansowej', 'Piękne ilustracje i historie dzieł sztuki renesansowej.', 2, 6, 1, 2018, 'Arkady', 'Jan Kowalski', 'example9.jpg'),
+('Angielskie idiomy', 'Zbiór najczęściej używanych angielskich idiomów.', 1, 3, 1, 2020, 'Oxford University Press', 'John Smith', 'example10.jpg');
 
--- Insert book options (states and prices for different books)
 INSERT INTO book_option (book_id, state_id, price, count) 
 VALUES 
-(1, 1, 12.99, 15), -- The Time Traveler (New)
-(1, 2, 9.99, 8),  -- The Time Traveler (Used)
-(2, 1, 18.50, 20), -- The Magic World (New)
-(3, 1, 25.00, 10), -- The Great War (New)
-(3, 2, 15.50, 5),  -- The Great War (Used)
-(4, 1, 22.00, 7),  -- La Vida de Picasso (New)
-(5, 1, 30.00, 12), -- Cien Años de Soledad (New)
-(6, 1, 10.99, 6),  -- Létranger (New)
-(7, 1, 19.99, 18), -- Dune (New)
-(7, 2, 12.99, 5),  -- Dune (Used)
-(8, 1, 14.99, 10); -- Il Nome della Rosa (New)
+(1, 1, 15.99, 10), 
+(1, 3, 10.99, 0), 
+(2, 1, 18.99, 0),
+(3, 1, 19.50, 15),
+(4, 2, 25.00, 7), 
+(5, 1, 22.00, 12),
+(5, 2, 12.00, 12),
+(5, 3, 10.00, 15),
+(6, 3, 9.99, 6),
+(7, 2, 30.00, 8),
+(7, 3, 12.00, 0),
+(8, 1, 17.99, 10),
+(9, 1, 34.99, 5),
+(10, 1, 12.99, 20);

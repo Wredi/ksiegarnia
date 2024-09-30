@@ -39,11 +39,17 @@
                   <div class="form-control-div">
                     <button type="submit" class="form-control form-control-submit">Zaloguj się</button>
                   </div>
+
                   <% if (typeof errorMessage !== 'undefined') { %>
                       <div class="alert alert-error" role="alert">
                           <%= errorMessage %>
                       </div>
                   <% } %>
+
+                  <!-- Register link -->
+                  <div class="form-control-div register-link">
+                    <p>Nie masz konta? <a href="/register">Zarejestruj się</a></p>
+                  </div>
                 </fieldset>
             </form>
         </div>

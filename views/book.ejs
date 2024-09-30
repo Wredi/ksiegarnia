@@ -36,9 +36,11 @@
             <form method="POST" action="/book/<%= book.id %>" class="book-pricing">
                 <div class="price-options">
                     <% book.price_options.forEach(option => { %>
-                        <label class="price-button">
-                            <input type="radio" name="priceOptionId" value="<%= option.id %>" data-price="<%= option.price %>" <%= option.count == 0 ? 'disabled' : ''%> <%= option.id === selectedPriceOptionId ? 'checked' : '' %> >
-                            <span><%= option.state %></span> <span><%= option.price %>zł</span> <span><%= option.count %> sztuk</span>
+                        <label class="price-button <%= option.count === 0 ? 'disabled' : '' %>">
+                            <input type="radio" name="priceOptionId" value="<%= option.id %>" data-price="<%= option.price %>" <%= option.count === 0 ? 'disabled' : '' %> <%= option.id === selectedPriceOptionId ? 'checked' : '' %> >
+                            <span class="option-state"><%= option.state %></span>
+                            <span class="option-price"><%= option.price %>zł</span>
+                            <span class="option-stock"><%= option.count > 0 ? option.count + ' sztuk' : 'Wyprzedany!' %></span>
                         </label>
                     <% }) %>
                 </div>
