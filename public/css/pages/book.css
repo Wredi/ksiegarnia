@@ -222,6 +222,62 @@
   margin-bottom: 10px;
 }
 
+.series-offers {
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+.series-offers h2 {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.series-offers .book-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.series-offers .book-container .book-card-link {
+  text-decoration: none;
+}
+.series-offers .book-container .book-card {
+  color: black;
+  background-color: white;
+  padding: 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.series-offers .book-container .book-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.series-offers .book-container .book-card .book-image {
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+.series-offers .book-container .book-card .book-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.series-offers .book-container .book-card .book-author {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+.series-offers .book-container .book-card .book-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 .description {
   margin-top: 40px;
 }
@@ -232,6 +288,15 @@
 .description p {
   color: #666;
   line-height: 1.6;
+}
+
+.alert-success {
+  background-color: #9dd49d;
+  color: #296029;
+  padding: 10px;
+  border: 1px solid #5cb85c;
+  border-radius: 4px;
+  text-align: center;
 }
 
 /*# sourceMappingURL=book.css.map */

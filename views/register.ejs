@@ -22,11 +22,6 @@
         <%- include('partials/navigation', { user: user }) %>
 
         <div class="register-box">
-            <% if (typeof successMessage !== 'undefined') { %>
-                <div class="alert alert-success" role="alert">
-                    <%= successMessage %>
-                </div>
-            <% } %>
             <form method="post" class="form">
                 <fieldset class="form-fieldset">
                   <legend>Rejestracja</legend>
@@ -60,6 +55,12 @@
                           <%= errorMessage %>
                       </div>
                   <% } %>
+
+                  <% if (typeof successMessage !== 'undefined') { %>
+                      <div class="alert alert-success" role="alert">
+                          <%= successMessage %>
+                      </div>
+                  <% } %>
                 </fieldset>
             </form>
         </div>
@@ -78,6 +79,8 @@
         const passwordConfirm = document.getElementById('confirm-password');
         const passwordConfirmError = document.getElementById('confirm-password-validation');
 
+        const submitButton = document.getElementsByClassName('form')[0];
+
         const VALUE_MISSING_MSG = "To miejsce nie może być puste";
 
         registerValidator(email, emailError, {
@@ -89,30 +92,32 @@
           valueMissing: VALUE_MISSING_MSG,
         });
 
+        const passwordConfirmValidator = registerValidator(passwordConfirm, passwordConfirmError, {
+          valueMissing: VALUE_MISSING_MSG,
+        }, () => {
+          if (password.value !== passwordConfirm.value) {
+              passwordConfirmError.textContent = 'Hasła muszą się zgadzać';
+              return true;
+          } 
+
+          return false;
+        });
+
         registerValidator(password, passwordError, {
           valueMissing: VALUE_MISSING_MSG,
         }, () => {
-            if (passwordConfirm.value == "") {
-                return false;
-            }
-
-            if (password.value !== passwordConfirm.value) {
-              passwordConfirmError.textContent = 'Hasła muszą się zgadzać';
-              markElementInvalid(passwordConfirm);
+            if (passwordConfirm.value !== "") {
+                passwordConfirmValidator();
             }
 
             return false;
         });
 
-        registerValidator(passwordConfirm, passwordConfirmError, {
-          valueMissing: VALUE_MISSING_MSG,
-        }, () => {
-          if (password.value !== passwordConfirm.value) {
-            passwordConfirmError.textContent = 'Hasła muszą się zgadzać';
-            return true;
-          }
-
-          return false;
+        submitButton.addEventListener('submit', (e) => {
+            console.log("dfsdsfsdf");
+            if(!passwordConfirmValidator()){
+                e.preventDefault();
+            }
         });
     </script>
 </body>

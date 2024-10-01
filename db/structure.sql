@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS volume (
+CREATE TABLE IF NOT EXISTS series (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
@@ -25,13 +25,14 @@ CREATE TABLE IF NOT EXISTS book (
     description TEXT,
     language_id INT,
     category_id INT,
-    volume_id INT,
+    series_id INT,
+    volume INT,
     year INT,
     publisher VARCHAR(255),
     authors VARCHAR(255),
     image_path VARCHAR(255),
     FOREIGN KEY (category_id) REFERENCES category(id),
-    FOREIGN KEY (volume_id) REFERENCES volume(id),
+    FOREIGN KEY (series_id) REFERENCES series(id),
     FOREIGN KEY (language_id) REFERENCES language(id)
 );
 
@@ -87,11 +88,8 @@ CREATE TABLE IF NOT EXISTS order_item (
     FOREIGN KEY (book_offer) REFERENCES book_offer(id)
 );*/
 
-INSERT INTO volume (name) VALUES 
-('Tom 1'), 
-('Tom 2'), 
-('Tom 3'),
-('Specjalne Wydanie Tom 1');
+INSERT INTO series (name) VALUES 
+('II wojna światowa.');
 
 INSERT INTO language (name) VALUES 
 ('Angielski'), 
@@ -116,18 +114,19 @@ INSERT INTO category (name, parent_category) VALUES
 ('II wojna światowa', 8),
 ('Czasy starożytne', 8);
 
-INSERT INTO book (title, description, language_id, category_id, volume_id, year, publisher, authors, image_path) 
+INSERT INTO book (title, description, language_id, category_id, series_id, volume, year, publisher, authors, image_path) 
 VALUES 
-('W pustyni i w puszczy', 'Przygody polskiego chłopca i afrykańskiej dziewczynki w Afryce.', 2, 7, 1, 1911, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example1.jpg'),
-('Krzyżacy', 'Opowieść o wojnie Polski z Zakonem Krzyżackim.', 2, 7, 2, 1900, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example2.jpg'),
-('Przewodnik po Paryżu', 'Praktyczny przewodnik po atrakcjach i kulturze Paryża.', 2, 4, 1, 2021, 'Pascal', 'Piotr Kowalski', 'example3.jpg'),
-('Atlas geograficzny', 'Zbiór map świata, kontynentów i państw.', 2, 5, 1, 2019, 'Demart', 'Jan Nowak', 'example4.jpg'),
-('Historia starożytna', 'Książka opisująca starożytne cywilizacje, takie jak Egipt i Mezopotamia.', 2, 11, 1, 2015, 'Wydawnictwo Literackie', 'Tadeusz Zieliński', 'example5.jpg'),
-('Bitwa pod Verdun', 'Opowieść o jednej z najważniejszych bitew I wojny światowej.', 2, 9, 1, 2017, 'Znak', 'Jacek Kaczmarek', 'example6.jpg'),
-('II wojna światowa', 'Kompleksowa historia drugiej wojny światowej.', 2, 10, 2, 2005, 'Zysk i S-ka', 'Norman Davies', 'example7.jpg'),
-('Przewodnik po Włoszech', 'Wszystko, co trzeba wiedzieć o podróży po Włoszech.', 2, 4, 1, 2019, 'Pascal', 'Anna Nowak', 'example8.jpg'),
-('Album Sztuki Renesansowej', 'Piękne ilustracje i historie dzieł sztuki renesansowej.', 2, 6, 1, 2018, 'Arkady', 'Jan Kowalski', 'example9.jpg'),
-('Angielskie idiomy', 'Zbiór najczęściej używanych angielskich idiomów.', 1, 3, 1, 2020, 'Oxford University Press', 'John Smith', 'example10.jpg');
+('W pustyni i w puszczy', 'Przygody polskiego chłopca i afrykańskiej dziewczynki w Afryce.', 2, 7, NULL, NULL, 1911, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example1.jpg'),
+('Krzyżacy', 'Opowieść o wojnie Polski z Zakonem Krzyżackim.', 2, 7, NULL, NULL, 1900, 'Gebethner i Wolff', 'Henryk Sienkiewicz', 'example2.jpg'),
+('Przewodnik po Paryżu', 'Praktyczny przewodnik po atrakcjach i kulturze Paryża.', 2, 4, NULL, NULL, 2021, 'Pascal', 'Piotr Kowalski', 'example3.jpg'),
+('Atlas geograficzny', 'Zbiór map świata, kontynentów i państw.', 2, 5, NULL, NULL, 2019, 'Demart', 'Jan Nowak', 'example4.jpg'),
+('Historia starożytna', 'Książka opisująca starożytne cywilizacje, takie jak Egipt i Mezopotamia.', 2, 11, NULL, NULL, 2015, 'Wydawnictwo Literackie', 'Tadeusz Zieliński', 'example5.jpg'),
+('Bitwa pod Verdun', 'Opowieść o jednej z najważniejszych bitew I wojny światowej.', 2, 9, NULL, NULL, 2017, 'Znak', 'Jacek Kaczmarek', 'example6.jpg'),
+('II wojna światowa. Tom 1', 'Kompleksowa historia drugiej wojny światowej.', 2, 10, 1, 1, 2005, 'Zysk i S-ka', 'Norman Davies', 'example7.jpg'),
+('II wojna światowa. Tom 2', 'Jeszcze więcej wojny.', 2, 10, 1, 2, 2008, 'Zysk i S-ka', 'Norman Davies', 'example7.jpg'),
+('Przewodnik po Włoszech', 'Wszystko, co trzeba wiedzieć o podróży po Włoszech.', 2, 4, NULL, NULL, 2019, 'Pascal', 'Anna Nowak', 'example8.jpg'),
+('Album Sztuki Renesansowej', 'Piękne ilustracje i historie dzieł sztuki renesansowej.', 2, 6, NULL, NULL, 2018, 'Arkady', 'Jan Kowalski', 'example9.jpg'),
+('Angielskie idiomy', 'Zbiór najczęściej używanych angielskich idiomów.', 1, 3, NULL, NULL, 2020, 'Oxford University Press', 'John Smith', 'example10.jpg');
 
 INSERT INTO book_option (book_id, state_id, price, count) 
 VALUES 

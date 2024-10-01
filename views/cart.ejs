@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart</title>
+    <title>Koszyk</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/pages/cart.css">
 </head>
@@ -13,12 +13,19 @@
 
         <div class="main-container">
             <div class="loading-overlay" style="display: none;"><p>Loading...</p></div>
+
+            <% if (typeof paymentMessage !== 'undefined') { %>
+                <div class="alert alert-success" role="alert">
+                    <%= paymentMessage %>
+                </div>
+            <% } %>
+
             <div class="cart-container">
                 <div class="cart-items">
                     <% cart.books.forEach(book => { %>
                     <div class="cart-item">
                         <div class="book-info">
-                            <img src="/images/magic_world.jpg" alt="Book Cover" class="book-image" />
+                            <img src="<%= '/images/' + book.image_path%>" alt="Book Cover" class="book-image" />
                             <div class="book-details">
                                 <p><%= book.title %></p>
                                 <p class="authors"><%= book.authors %></p>
@@ -56,11 +63,13 @@
                 </div>
                 <div class="cart-summary">
                     <div class="summary-details">
-                        <p>Sum: <%= cart.sum %> zł</p>
-                        <p>Discount: <%= cart.discount_sum %> zł (<%= cart.discount_percent %>%)</p>
-                        <p>Total: <%= cart.total %> zł</p>
+                        <p>Cena: <%= cart.sum %> zł</p>
+                        <p>Obniżka: <%= cart.discount_sum %> zł (<%= cart.discount_percent %>%)</p>
+                        <p>SUMA: <%= cart.total %> zł</p>
                     </div>
-                    <button class="checkout-button">Przejdź do płatności</button>
+                    <form action="/cart" method="POST">
+                        <button type="submit" class="checkout-button">Przejdź do płatności</button>
+                    </form>
                 </div>
             </div>
         </div>

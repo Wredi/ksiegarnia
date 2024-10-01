@@ -21,18 +21,22 @@ function registerValidator(elementIn, elementErrorIn, validityErrors, additional
         if (additionalChecks()) {
           markElementInvalid(element);
           element.addEventListener('input', validateHandler);
+          return false;
         }
       }
+      return true;
     } else {
       markElementInvalid(element);
       element.addEventListener('input', validateHandler);
       for(const i in element.validity) {
         if (element.validity[i]) {
           elementError.textContent = validityErrors[i];
-          return;
         }
       }
+      return false;
     }
   }
   element.addEventListener('blur', validateHandler);
+
+  return validateHandler;
 }

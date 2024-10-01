@@ -20,6 +20,12 @@
     <div class="page">
         <%- include('partials/navigation', { user: user }) %>
 
+        <% if (message) { %>
+            <div class="alert alert-success"><%= message %></div>
+        <% } else if (errorMessage) { %>
+            <div class="alert alert-error"><%= errorMessage %></div>
+        <% } %>
+
         <div class="book-details">
             <div class="book-image">
                 <img src="<%= '/images/' + book.image_path %>" alt="<%= book.title %>">
@@ -30,6 +36,9 @@
                 <p><strong>Wydawca:</strong> <%= book.publisher %></p>
                 <p><strong>Rok wydania:</strong> <%= book.year %></p>
                 <p><strong>Język:</strong> <%= book.language %></p>
+                <% if (book.volume) { %>
+                    <p><strong>Tom:</strong> <%= book.volume %></p>
+                <% } %>
                 <p class="book-description"><%= book.desc %></p>
             </div>
 
@@ -50,18 +59,30 @@
                     <button type="submit" class="add-to-cart" <%= selectedPriceOptionId == null ? 'disabled' : '' %>>Dodaj do koszyka</button>
                 </div>
             </form>
-
-            <% if (message) { %>
-                <div class="alert alert-info"><%= message %></div>
-            <% } else if (errorMessage) { %>
-                <div class="alert alert-error"><%= errorMessage %></div>
-            <% } %>
         </div>
 
         <div class="description">
             <h2>Opis</h2>
             <p><%= book.desc %></p>
         </div>
+
+        <% if (seriesOffers.length > 0) { %>
+            <section class="series-offers">
+                <h2>Sprawdź inne książki z serii "<%= book.series_name %>"</h2>
+                <div class="book-container">
+                    <% seriesOffers.forEach(offer => { %>
+                    <a class="book-card-link" href="/book/<%= offer.id %>">
+                        <div class="book-card">
+                            <img src="<%= "/images/" + offer.image_path %>" alt="<%= offer.title %>" class="book-image">
+                            <p class="book-title"><%= offer.title %></p>
+                            <p class="book-author"><%= offer.authors %></p>
+                            <p class="book-price"><%= offer.min_price %> zł</p>
+                        </div>
+                    </a>
+                    <% }) %>
+                </div>
+            </section>
+        <% } %>
     </div>
 
     <script>

@@ -2,8 +2,9 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 
-import router from "./routes/router.mjs";
-import userRouter from "./routes/user.mjs";
+import commonRouter from "./routes/commonRouter.mjs";
+import userRouter from "./routes/userRouter.mjs";
+import cartRouter from "./routes/cartRouter.mjs";
 
 import process from 'process';
 
@@ -46,8 +47,9 @@ if(process.env.INIT){
     app.use(express.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
-    app.use('/', router);
+    app.use('/', commonRouter);
     app.use('/', userRouter);
+    app.use('/cart', cartRouter);
 
     const server = app.listen(8011, (err) => {
         if (err) {
@@ -55,7 +57,6 @@ if(process.env.INIT){
             return
         }
 
-        console.log(`Serwer nasłuchuje na porcie 8011`);
-        console.log(`Wpisz w pasku adresu przeglądarki: http://localhost:8011`);
+        console.log(`http://localhost:8011`);
     });
 }

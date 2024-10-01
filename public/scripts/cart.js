@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingOverlay = document.querySelector('.loading-overlay');
 
     const showLoading = () => {
-        loadingOverlay.style.display = 'block';
+        //loadingOverlay.style.display = 'block';
     };
 
     const hideLoading = () => {
-        loadingOverlay.style.display = 'none';
+        //loadingOverlay.style.display = 'none';
     };
 
     const updateCart = (cart) => {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItem.classList.add('cart-item');
             cartItem.innerHTML = `
                 <div class="book-info">
-                    <img src="/images/magic_world.jpg" alt="Book Cover" class="book-image" />
+                    <img src="${`/images/${book.image_path}`}" alt="Book Cover" class="book-image" />
                     <div class="book-details">
                         <p>${book.title}</p>
                         <p class="authors">${book.authors}</p>
@@ -42,10 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItems.appendChild(cartItem);
         });
 
+
         summaryDetails.innerHTML = `
-            <p>Sum: ${cart.sum} zł</p>
-            <p>Discount: ${cart.discount_sum} zł (${cart.discount_percent} %)</p>
-            <p>Total: ${cart.total} zł</p>
+            <p>Cena: ${cart.sum} zł</p>
+            <p>Obniżka: ${cart.discount_sum} zł (${cart.discount_percent}%)</p>
+            <p>SUMA: ${cart.total} zł</p>
         `;
         hideLoading();  
     };

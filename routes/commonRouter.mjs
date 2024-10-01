@@ -4,15 +4,15 @@ import { dbHandler } from '../index.mjs';
 import qs from 'qs';
 import { getUserFromSession } from '../utils/utils.mjs';
 
-const router = express.Router();
+const commonRouter = express.Router();
 
 const __dirname = import.meta.dirname;
 let parentDirPath = resolve(__dirname, '..');
 const publicDirPath = parentDirPath + "/public";
 
-router.use(express.static(publicDirPath));
+commonRouter.use(express.static(publicDirPath));
 
-router.get('/', async (req, res) => {
+commonRouter.get('/', async (req, res) => {
     try {
         const bookOffers = await dbHandler.getBookViews(
             null, null, null, null, 6
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/browse', async (req, res) => {
+commonRouter.get('/browse', async (req, res) => {
     try {
         const params = qs.parse(req.query);  
         const bookOffers = await dbHandler.getBookOffers(
@@ -59,7 +59,7 @@ function getPriceOptionId(book) {
     return element === undefined ? null : element.id;
 }
 
-router.route('/book/:id')
+commonRouter.route('/book/:id')
     .get(async (req, res) => {
         const bookId = req.params.id;
         const user = getUserFromSession(req);  
@@ -71,10 +71,13 @@ router.route('/book/:id')
                 return res.status(404).send("Book not found");
             }
 
+            const seriesOffers = await dbHandler.getBookOffersFromSeries(book.id, book.series_id);
+
             res.render('book', { 
                 book, 
                 user, 
                 selectedPriceOptionId: getPriceOptionId(book), 
+                seriesOffers,
                 message: null, 
                 errorMessage: null 
             });
@@ -90,11 +93,18 @@ router.route('/book/:id')
 
         const book = await dbHandler.getBookWithPriceOptions(bookId);
         
+        if (!book) {
+            return res.status(404).send("Book not found");
+        }
+
+        const seriesOffers = await dbHandler.getBookOffersFromSeries(book.id, book.series_id);
+
         if (!user) {
             return res.render('book', { 
                 book: book, 
                 user: null, 
                 selectedPriceOptionId: getPriceOptionId(book), 
+                seriesOffers,
                 errorMessage: 'Musisz być zalogowany, aby dodać książkę do koszyka.', 
                 message: null 
             });
@@ -107,6 +117,7 @@ router.route('/book/:id')
                 book: book, 
                 user: user, 
                 selectedPriceOptionId: getPriceOptionId(book), 
+                seriesOffers,
                 message: 'Książka została dodana do koszyka!', 
                 errorMessage: null 
             });
@@ -116,4 +127,4 @@ router.route('/book/:id')
         }
     });
 
-export default router;
+export default commonRouter;

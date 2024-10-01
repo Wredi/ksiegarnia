@@ -1,8 +1,9 @@
 class CartBookView {
-    constructor(option_id, title, authors, state, price, quantity, total_price, available_quantity) {
+    constructor(option_id, title, authors, image_path, state, price, quantity, total_price, available_quantity) {
         this.option_id = option_id;
         this.title = title;
         this.authors = authors;
+        this.image_path = image_path;
         this.state = state;
         this.price = price;
         this.quantity = quantity;

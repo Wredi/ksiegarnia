@@ -1,5 +1,5 @@
 class BookOffer {
-    constructor(id, title, desc, language, year, publisher, authors, image_path, price_options) {
+    constructor(id, title, desc, language, year, publisher, authors, series_id, series_name, volume, image_path, price_options) {
         this.id = id;
         this.title = title;
         this.desc = desc;
@@ -7,6 +7,9 @@ class BookOffer {
         this.year = year;
         this.publisher = publisher;
         this.authors = authors;
+        this.series_id = series_id;
+        this.series_name = series_name;
+        this.volume = volume;
         this.image_path = image_path;
         this.price_options = price_options;
     }
@@ -19,6 +22,18 @@ class BookPriceOption {
         this.price = price;
         this.count = count;
     }
+}
+
+class BookOfferView {
+    constructor(id, title, authors, image_path, min_price, total_count) {
+        this.id = id;
+        this.image_path = image_path;
+        this.title= title;
+        this.authors= authors;
+        this.min_price= min_price;
+        this.total_count= total_count;
+    }
+
 }
 
 class BookFilter {
@@ -37,4 +52,4 @@ class BookFilterItem {
     }
 }
 
-export { BookOffer, BookPriceOption, BookFilter, BookFilterItem };
+export { BookOffer, BookPriceOption, BookFilter, BookFilterItem, BookOfferView };

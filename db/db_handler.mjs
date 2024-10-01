@@ -2,7 +2,7 @@ import { createPool } from 'mysql2/promise';
 import { readFileSync } from 'fs';
 import { resolve } from "path";
 import { User } from '../models/user.mjs';
-import { BookOffer, BookPriceOption, BookFilter, BookFilterItem } from '../models/book_offer.mjs';
+import { BookOfferView, BookOffer, BookPriceOption, BookFilter, BookFilterItem } from '../models/book_offer.mjs';
 import { Cart, CartBookView } from '../models/cart.mjs';
 
 const __dirname = import.meta.dirname;
@@ -121,9 +121,11 @@ class DBHandler {
         const conn = await this.pool.getConnection();
 
         const bookQuery = `
-            SELECT b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, l.name as language
+            SELECT b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, l.name as language,
+            b.series_id, sr.name as series_name, b.volume
             FROM book b
             LEFT JOIN language l ON b.language_id = l.id
+            LEFT JOIN series sr ON b.series_id = sr.id
             WHERE b.id = ?
         `;
         const priceOptionsQuery = `
@@ -144,7 +146,11 @@ class DBHandler {
 
         conn.release();
         
-        return new BookOffer(book.id, book.title, book.description, book.language, book.year, book.publisher, book.authors, book.image_path, bookPriceOptions);
+        return new BookOffer(
+            book.id, book.title, book.description, book.language, book.year, 
+            book.publisher, book.authors, book.series_id, book.series_name, 
+            book.volume, book.image_path, bookPriceOptions
+        );
     }
 
     async updateCartSessionTotal(userId) {
@@ -171,23 +177,56 @@ class DBHandler {
         conn.release();
     } 
 
-    //NOT USED CURRENTLY, TODO
-    async clearCartSession(userId) {
+    async processPayment(userId) {
         const conn = await this.pool.getConnection();
 
-        const query = `
-            DELETE ci
-            FROM cart_item ci
-            JOIN cart_session cs ON ci.cart_session_id = cs.id
-            WHERE cs.user_id = ?
-        `;
-        const result = await conn.query(query, [userId]);
-        console.log("clearCarSession");
-        console.log(result);
+        try {
+            await conn.beginTransaction();
 
-        //await this.updateCartSessionTotal((await this.getUserCartSessionId(userId)));
+            const cartItemsQuery = `
+                SELECT bo.id AS book_option_id, ci.quantity 
+                FROM cart_item ci
+                JOIN book_option bo ON ci.book_offer = bo.id
+                JOIN cart_session cs ON ci.cart_session_id = cs.id
+                WHERE cs.user_id = ?
+            `;
+            const [cartItems] = await conn.query(cartItemsQuery, [userId]);
 
-        conn.release();
+            for (const item of cartItems) {
+                const updateStockQuery = `
+                    UPDATE book_option 
+                    SET count = count - ? 
+                    WHERE id = ? AND count >= ?
+                `;
+                const [updateResult] = await conn.query(updateStockQuery, [item.quantity, item.book_option_id, item.quantity]);
+
+                if (updateResult.affectedRows === 0) {
+                    throw new Error(`Not enough stock for book option ID: ${item.book_option_id}`);
+                }
+            }
+
+            const deleteCartItemsQuery = `
+                DELETE ci FROM cart_item ci
+                JOIN cart_session cs ON ci.cart_session_id = cs.id
+                WHERE cs.user_id = ?
+            `;
+            await conn.query(deleteCartItemsQuery, [userId]);
+
+            const updateCartSessionQuery = `
+                UPDATE cart_session 
+                SET sum = 0, discount_percent = 0 
+                WHERE user_id = ?
+            `;
+            await conn.query(updateCartSessionQuery, [userId]);
+
+            await conn.commit();
+        } catch (error) {
+            await conn.rollback();
+            console.error('Error processing payment:', error);
+            throw error;
+        } finally {
+            conn.release();
+        }
     }
 
     async updateCartItemQuantity(userId, bookOptionId, quantity) {
@@ -257,7 +296,7 @@ class DBHandler {
 
         try {
             const bookDetailsQuery = `
-                SELECT bo.id AS option_id, b.title, b.authors, s.name as state, bo.price, ci.quantity,
+                SELECT bo.id AS option_id, b.title, b.authors, b.image_path, s.name as state, bo.price, ci.quantity,
                        (bo.price * ci.quantity) AS total_price, bo.count as available_quantity
                 FROM cart_item ci
                 JOIN book_option bo ON ci.book_offer = bo.id
@@ -273,6 +312,7 @@ class DBHandler {
                 book.option_id,
                 book.title,
                 book.authors,
+                book.image_path,
                 book.state,
                 book.price,
                 book.quantity,
@@ -409,14 +449,14 @@ class DBHandler {
 
             const [rows] = await conn.execute(query, params);
 
-            const bookViews = rows.map(row => ({
-                id: row.id,
-                image_path: row.image_path,
-                title: row.title,
-                authors: row.authors,
-                min_price: row.min_price,
-                total_count: row.total_count
-            }));
+            const bookViews = rows.map(row => new BookOfferView(
+                row.id,
+                row.title,
+                row.authors,
+                row.image_path,
+                row.min_price,
+                row.total_count
+            ));
 
             conn.release();
             return bookViews;
@@ -426,7 +466,6 @@ class DBHandler {
         }
 }
 
-    //DEPRECATED: use getBookViews
     async getBookOffers(search_query = null, category_id = null, lang_id = null, state_id = null) {
         try {
             const conn = await this.pool.getConnection();
@@ -434,10 +473,11 @@ class DBHandler {
             let query = `
                 SELECT 
                     b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, bo.price, bo.count,
-                    l.name as language, s.name as state,
+                    l.name as language, s.name as state, b.series_id, sr.name as series_name, b.volume,
                     bo.state_id as state_id
                 FROM book b
                 LEFT JOIN language l ON b.language_id = l.id
+                LEFT JOIN series sr ON b.series_id = sr.id
                 LEFT JOIN book_option bo ON bo.book_id = b.id
                 LEFT JOIN state s ON bo.state_id = s.id
                 LEFT JOIN category c ON b.category_id = c.id
@@ -478,6 +518,9 @@ class DBHandler {
                         row.year,
                         row.publisher,
                         row.authors,
+                        row.series_id,
+                        row.series_name,
+                        row.volume,
                         row.image_path,
                         []
                     );
@@ -500,6 +543,40 @@ class DBHandler {
             return bookOffers;
         } catch (error) {
             console.error('Error fetching book offers:', error);
+        }
+    }
+
+    async getBookOffersFromSeries(book_id, series_id) {
+        try {
+            const conn = await this.pool.getConnection();
+
+            let query = `
+                SELECT 
+                    b.id, b.image_path, b.title, b.authors, MIN(bo.price) as min_price, SUM(bo.count) as total_count
+                FROM book b
+                JOIN book_option bo ON bo.book_id = b.id
+                JOIN category c ON b.category_id = c.id
+                WHERE bo.count > 0 AND (b.series_id = ?) AND (b.id != ?)
+                GROUP BY b.id
+                ORDER BY b.series_id ASC
+            `;
+
+            const [rows] = await conn.execute(query, [series_id, book_id]);
+
+            const bookViews = rows.map(row => new BookOfferView(
+                row.id,
+                row.title,
+                row.authors,
+                row.image_path,
+                row.min_price,
+                row.total_count
+            ));
+
+            conn.release();
+            return bookViews;
+        } catch (error) {
+            console.error('Error fetching book views:', error);
+            throw error;
         }
     }
 }
