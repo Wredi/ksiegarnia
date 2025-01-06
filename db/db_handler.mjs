@@ -41,6 +41,10 @@ const states = await this.db.collection('state').insertMany([
     {  name: 'Zniszczone' }
 ]);
 
+const preCategories = await this.db.collection('category').insertOne(
+    { name: "Wojny", parent_category: null }
+);
+
 // Insert into category
 const categories = await this.db.collection('category').insertMany([
     {  name: 'Podręczniki', parent_category: null },
@@ -51,8 +55,8 @@ const categories = await this.db.collection('category').insertMany([
     {  name: 'Albumy', parent_category: null },
     {  name: 'Beletrystyka', parent_category: null },
     {  name: 'Historia', parent_category: null },
-    {  name: 'I wojna światowa', parent_category: null},
-    {  name: 'II wojna światowa', parent_category: null},
+    {  name: 'I wojna światowa', parent_category: new ObjectId(preCategories.insertedId)},
+    {  name: 'II wojna światowa', parent_category: new ObjectId(preCategories.insertedId)},
     {  name: 'Czasy starożytne', parent_category: null}
     /*
     {  name: 'I wojna światowa', parent_category: new ObjectId(categories.insertedIds[7]) },
