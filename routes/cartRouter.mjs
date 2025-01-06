@@ -45,7 +45,7 @@ cartRouter.post('/update-quantity', async (req, res) => {
     const userId = user.id;
 
     const { bookOptionId, quantity } = req.body;
-    if(!isInt(bookOptionId) || !isInt(quantity)) {
+    if(!bookOptionId || !isInt(quantity)) {
         return res.status(500).json({ success: false, message: 'Error updating quantity' });
     }
 
@@ -69,7 +69,7 @@ cartRouter.post('/delete-item', async (req, res) => {
     const userId = user.id;
     const { bookOptionId } = req.body;
 
-    if(!isInt(bookOptionId)) {
+    if(!bookOptionId) {
         return res.status(500).json({ success: false, message: 'Error updating quantity' });
     }
 

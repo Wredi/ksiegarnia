@@ -1,387 +1,722 @@
-import { createPool } from 'mysql2/promise';
-import { readFileSync } from 'fs';
-import { resolve } from "path";
-import { User } from '../models/user.mjs';
-import { BookOfferView, BookOffer, BookPriceOption, BookFilter, BookFilterItem } from '../models/book_offer.mjs';
-import { Cart, CartBookView } from '../models/cart.mjs';
-
-const __dirname = import.meta.dirname;
+import { MongoClient, ObjectId } from 'mongodb';
 
 class DBHandler {
-    constructor(host, user, password, database, port) {
-        try{
-            this.pool = createPool({
-                host: host,
-                user: user,
-                password: password,
-                database: database,
-                port: port,
-                waitForConnections: true,
-                connectionLimit: 10,
-                queueLimit: 0,
-                multipleStatements: true
-            });
-        }catch(err){
-            console.error(err);
+    constructor(uri, dbName) {
+        this.client = new MongoClient(uri);
+        this.dbName = dbName;
+    }
+
+    async connect() {
+        try {
+            await this.client.connect();
+            this.db = this.client.db(this.dbName);
+            console.log('Connected to MongoDB');
+        } catch (error) {
+            console.error('Error connecting to MongoDB:', error);
         }
     }
 
+    async close() {
+        await this.client.close();
+        console.log('Disconnected from MongoDB');
+    }
+
     async initDatabase() {
-        let structureFilePath = resolve(__dirname, 'structure.sql');
         try {
-            const sql = readFileSync(structureFilePath, 'utf-8');
+const series = await this.db.collection('series').insertOne({
+    name: 'II wojna światowa.'
+});
 
-            const conn = await this.pool.getConnection();
-            await conn.query(sql);
-            conn.release();
+// Insert into language
+const languages = await this.db.collection('language').insertMany([
+    {  name: 'Angielski' },
+    {  name: 'Polski' }
+]);
 
+// Insert into state
+const states = await this.db.collection('state').insertMany([
+    {  name: 'Nowy' },
+    {  name: 'Bardzo dobry' },
+    {  name: 'Dobry' },
+    {  name: 'Zniszczone' }
+]);
+
+// Insert into category
+const categories = await this.db.collection('category').insertMany([
+    {  name: 'Podręczniki', parent_category: null },
+    {  name: 'Katalogi', parent_category: null },
+    {  name: 'Informatory', parent_category: null },
+    {  name: 'Przewodniki', parent_category: null },
+    {  name: 'Atlasy', parent_category: null },
+    {  name: 'Albumy', parent_category: null },
+    {  name: 'Beletrystyka', parent_category: null },
+    {  name: 'Historia', parent_category: null },
+    {  name: 'I wojna światowa', parent_category: null},
+    {  name: 'II wojna światowa', parent_category: null},
+    {  name: 'Czasy starożytne', parent_category: null}
+    /*
+    {  name: 'I wojna światowa', parent_category: new ObjectId(categories.insertedIds[7]) },
+    {  name: 'II wojna światowa', parent_category: new ObjectId(categories.insertedIds[7]) },
+    {  name: 'Czasy starożytne', parent_category: new ObjectId(categories.insertedIds[7]) }
+    */
+]);
+
+// Insert into book
+const books = await this.db.collection('book').insertMany([
+    {
+      
+        title: 'W pustyni i w puszczy',
+        description: 'Przygody polskiego chłopca i afrykańskiej dziewczynki w Afryce.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[6]),
+        series_id: null,
+        volume: null,
+        year: 1911,
+        publisher: 'Gebethner i Wolff',
+        authors: 'Henryk Sienkiewicz',
+        image_path: 'example1.jpg'
+    },
+    {
+     
+        title: 'Krzyżacy',
+        description: 'Opowieść o wojnie Polski z Zakonem Krzyżackim.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[6]),
+        series_id: null,
+        volume: null,
+        year: 1900,
+        publisher: 'Gebethner i Wolff',
+        authors: 'Henryk Sienkiewicz',
+        image_path: 'example2.jpg'
+    },
+    {
+    
+        title: 'Przewodnik po Paryżu',
+        description: 'Praktyczny przewodnik po atrakcjach i kulturze Paryża.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[3]),
+        series_id: null,
+        volume: null,
+        year: 2021,
+        publisher: 'Pascal',
+        authors: 'Piotr Kowalski',
+        image_path: 'example3.jpg'
+    },
+    {
+   
+        title: 'Atlas geograficzny',
+        description: 'Zbiór map świata, kontynentów i państw.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[4]),
+        series_id: null,
+        volume: null,
+        year: 2019,
+        publisher: 'Demart',
+        authors: 'Jan Nowak',
+        image_path: 'example4.jpg'
+    },
+    {
+  
+        title: 'Historia starożytna',
+        description: 'Książka opisująca starożytne cywilizacje, takie jak Egipt i Mezopotamia.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[10]),
+        series_id: null,
+        volume: null,
+        year: 2015,
+        publisher: 'Wydawnictwo Literackie',
+        authors: 'Tadeusz Zieliński',
+        image_path: 'example5.jpg'
+    },
+    {
+ 
+        title: 'Bitwa pod Verdun',
+        description: 'Opowieść o jednej z najważniejszych bitew I wojny światowej.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[8]),
+        series_id: null,
+        volume: null,
+        year: 2017,
+        publisher: 'Znak',
+        authors: 'Jacek Kaczmarek',
+        image_path: 'example6.jpg'
+    },
+    {
+
+        title: 'II wojna światowa. Tom 1',
+        description: 'Kompleksowa historia drugiej wojny światowej.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[9]),
+        series_id: new ObjectId(series.insertedId),
+        volume: 1,
+        year: 2005,
+        publisher: 'Zysk i S-ka',
+        authors: 'Norman Davies',
+        image_path: 'example7.jpg'
+    },
+    {
+
+        title: 'II wojna światowa. Tom 2',
+        description: 'Jeszcze więcej wojny.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[9]),
+        series_id: new ObjectId(series.insertedId),
+        volume: 2,
+        year: 2008,
+        publisher: 'Zysk i S-ka',
+        authors: 'Norman Davies',
+        image_path: 'example7.jpg'
+    },
+    {
+
+        title: 'Przewodnik po Włoszech',
+        description: 'Wszystko, co trzeba wiedzieć o podróży po Włoszech.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[3]),
+        series_id: null,
+        volume: null,
+        year: 2019,
+        publisher: 'Pascal',
+        authors: 'Anna Nowak',
+        image_path: 'example8.jpg'
+    },
+    {
+
+        title: 'Album Sztuki Renesansowej',
+        description: 'Piękne ilustracje i historie dzieł sztuki renesansowej.',
+        language_id: new ObjectId(languages.insertedIds[1]),
+        category_id: new ObjectId(categories.insertedIds[5]),
+        series_id: null,
+        volume: null,
+        year: 2018,
+        publisher: 'Arkady',
+        authors: 'Jan Kowalski',
+        image_path: 'example9.jpg'
+    },
+    {
+
+        title: 'Angielskie idiomy',
+        description: 'Zbiór najczęściej używanych angielskich idiomów.',
+        language_id: new ObjectId(languages.insertedIds[0]),
+        category_id: new ObjectId(categories.insertedIds[2]),
+        series_id: null,
+        volume: null,
+        year: 2020,
+        publisher: 'Oxford University Press',
+        authors: 'John Smith',
+        image_path: 'example10.jpg'
+    }
+]);
+
+// Insert into book_option
+await this.db.collection('book_option').insertMany([
+    { book_id: books.insertedIds[0], state_id: new ObjectId(states.insertedIds[0]), price: 15.99, count: 10 },
+    { book_id: books.insertedIds[0], state_id: new ObjectId(states.insertedIds[2]), price: 10.99, count: 0 },
+    { book_id: books.insertedIds[1], state_id: new ObjectId(states.insertedIds[0]), price: 18.99, count: 0 },
+    { book_id: books.insertedIds[2], state_id: new ObjectId(states.insertedIds[0]), price: 19.50, count: 15 },
+    { book_id: books.insertedIds[3], state_id: new ObjectId(states.insertedIds[1]), price: 25.00, count: 7 },
+    { book_id: books.insertedIds[4], state_id: new ObjectId(states.insertedIds[0]), price: 22.00, count: 12 },
+    { book_id: books.insertedIds[4], state_id: new ObjectId(states.insertedIds[1]), price: 12.00, count: 12 },
+    { book_id: books.insertedIds[4], state_id: new ObjectId(states.insertedIds[2]), price: 10.00, count: 15 },
+    { book_id: books.insertedIds[5], state_id: new ObjectId(states.insertedIds[2]), price: 9.99, count: 6 },
+    { book_id: books.insertedIds[6], state_id: new ObjectId(states.insertedIds[1]), price: 30.00, count: 8 },
+    { book_id: books.insertedIds[6], state_id: new ObjectId(states.insertedIds[2]), price: 12.00, count: 0 },
+    { book_id: books.insertedIds[7], state_id: new ObjectId(states.insertedIds[0]), price: 17.99, count: 10 },
+    { book_id: books.insertedIds[8], state_id: new ObjectId(states.insertedIds[0]), price: 34.99, count: 5 },
+    { book_id: books.insertedIds[9], state_id: new ObjectId(states.insertedIds[0]), price: 12.99, count: 20 },
+    { book_id: books.insertedIds[10], state_id: new ObjectId(states.insertedIds[0]), price: 20.99, count: 0 }
+]);
             console.log('Database initialized successfully.');
         } catch (error) {
-            console.error('Error initializing the database:', error);
+            console.error('Error initializing database:', error);
         }
     }
 
     async truncateDatabase() {
         try {
-            const truncateQuery = `
-                SET FOREIGN_KEY_CHECKS = 0;
-                TRUNCATE TABLE book_option;
-                TRUNCATE TABLE book;
-                TRUNCATE TABLE category;
-                TRUNCATE TABLE volume;
-                TRUNCATE TABLE language;
-                TRUNCATE TABLE state;
-                TRUNCATE TABLE user;
-                TRUNCATE TABLE cart_session;
-                TRUNCATE TABLE cart_item;
-                SET FOREIGN_KEY_CHECKS = 1;
-            `;
+            const collections = await this.db.listCollections().toArray();
 
-            const conn = await this.pool.getConnection();
-            await conn.query(truncateQuery);
-            conn.release();
+            await Promise.all(
+                collections.map(async (collection) => {
+                    await this.db.collection(collection.name).deleteMany({});
+                })
+            );
 
             console.log('Database truncated successfully.');
         } catch (error) {
-            console.error('Error truncating the database:', error);
+            console.error('Error truncating database:', error);
         }
     }
 
     async getBookFilters() {
-        const conn = await this.pool.getConnection();
-
-        const filters = [
-            { name: "category", display_name: "Kategoria" },
-            { name: "language", display_name: "Język" },
-            { name: "state", display_name: "Stan" }
-        ];
-
-        const getCategoryItems = async () => {
-            const [rows] = await conn.query(`SELECT * FROM category`);
-            
-            const categoryMap = new Map();
-
-            const parentCategories = rows.filter(row => row.parent_category === null);
-            
-            parentCategories.forEach(row => {
-                categoryMap.set(row.id, new BookFilterItem(row.id, row.name, []));
-            });
-
-            rows.forEach(row => {
-                if (row.parent_category) {
-                    const parentItem = categoryMap.get(row.parent_category);
-                    if (parentItem) {
-                        parentItem.child_items.push(new BookFilterItem(row.id, row.name, []));
-                    }
-                }
-            });
-
-            return [...categoryMap.values()];
-        };
-
-        const getItemsForFilter = async (filter) => {
-            if (filter.name === "category") {
-                return getCategoryItems();
-            }
-
-            const [rows] = await conn.query(`SELECT * FROM ${filter.name}`);
-            return rows.map(i => new BookFilterItem(i.id, i.name, []));
-        };
-
-        const result = await Promise.all(filters.map(async filter => {
-            return new BookFilter(filter.name, filter.display_name, await getItemsForFilter(filter));
-        }));
-
-        conn.release();
-
-        return result;
-    }
-
-    async getBookWithPriceOptions(bookId) {
-        const conn = await this.pool.getConnection();
-
-        const bookQuery = `
-            SELECT b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, l.name as language,
-            b.series_id, sr.name as series_name, b.volume
-            FROM book b
-            LEFT JOIN language l ON b.language_id = l.id
-            LEFT JOIN series sr ON b.series_id = sr.id
-            WHERE b.id = ?
-        `;
-        const priceOptionsQuery = `
-            SELECT bo.id, s.name AS state, bo.price, bo.count
-            FROM book_option bo
-            LEFT JOIN state s ON bo.state_id = s.id
-            WHERE bo.book_id = ?
-            ORDER BY bo.price ASC
-        `;
-        
-        const [bookData] = await conn.query(bookQuery, [bookId]);
-        const [priceOptions] = await conn.query(priceOptionsQuery, [bookId]);
-
-        if (bookData.length === 0) return null;
-
-        const book = bookData[0];
-        const bookPriceOptions = priceOptions.map(option => new BookPriceOption(option.id, option.state, option.price, option.count));
-
-        conn.release();
-        
-        return new BookOffer(
-            book.id, book.title, book.description, book.language, book.year, 
-            book.publisher, book.authors, book.series_id, book.series_name, 
-            book.volume, book.image_path, bookPriceOptions
-        );
-    }
-
-    async updateCartSessionTotal(userId) {
-        const conn = await this.pool.getConnection();
-
-        const totalQuery = `
-            SELECT SUM(bo.price * ci.quantity) AS sum
-            FROM cart_item ci
-            JOIN book_option bo ON ci.book_offer = bo.id
-            JOIN cart_session cs ON ci.cart_session_id = cs.id
-            WHERE cs.user_id = ?
-        `;
-        const [[{ sum }]] = await conn.query(totalQuery, [userId]);
-
-        const discountPercent = sum > 200 ? 10 : sum > 100 ? 5 : 0;
-
-        const updateQuery = `
-            UPDATE cart_session 
-            SET sum = ?, discount_percent = ?
-            WHERE user_id = ?
-        `;
-        await conn.query(updateQuery, [sum || 0, discountPercent, userId]);
-
-        conn.release();
-    } 
-
-    async processPayment(userId) {
-        const conn = await this.pool.getConnection();
-
         try {
-            await conn.beginTransaction();
+            const filters = [
+                { name: 'category', display_name: 'Kategoria' },
+                { name: 'language', display_name: 'Język' },
+                { name: 'state', display_name: 'Stan' }
+            ];
 
-            const cartItemsQuery = `
-                SELECT bo.id AS book_option_id, ci.quantity 
-                FROM cart_item ci
-                JOIN book_option bo ON ci.book_offer = bo.id
-                JOIN cart_session cs ON ci.cart_session_id = cs.id
-                WHERE cs.user_id = ?
-            `;
-            const [cartItems] = await conn.query(cartItemsQuery, [userId]);
+            const result = await Promise.all(
+                filters.map(async (filter) => {
+                    const items = await this.db.collection(filter.name).find().toArray();
 
-            for (const item of cartItems) {
-                const updateStockQuery = `
-                    UPDATE book_option 
-                    SET count = count - ? 
-                    WHERE id = ? AND count >= ?
-                `;
-                const [updateResult] = await conn.query(updateStockQuery, [item.quantity, item.book_option_id, item.quantity]);
+                    if (filter.name === 'category') {
+                        const categoryMap = new Map();
+                        
+                        items.forEach(item => {
+                            if (!item.parent_category) {
+                                categoryMap.set(item._id.toString(), {
+                                    id: item._id.toString(),
+                                    name: item.name,
+                                    child_items: []
+                                });
+                            }
+                        });
 
-                if (updateResult.affectedRows === 0) {
-                    throw new Error(`Not enough stock for book option ID: ${item.book_option_id}`);
-                }
-            }
+                        items.forEach(item => {
+                            if (item.parent_category) {
+                                const parent = categoryMap.get(item.parent_category.toString());
+                                if (parent) {
+                                    parent.child_items.push({
+                                        id: item._id.toString(),
+                                        name: item.name,
+                                        child_items: []
+                                    });
+                                }
+                            }
+                        });
 
-            const deleteCartItemsQuery = `
-                DELETE ci FROM cart_item ci
-                JOIN cart_session cs ON ci.cart_session_id = cs.id
-                WHERE cs.user_id = ?
-            `;
-            await conn.query(deleteCartItemsQuery, [userId]);
+                        return { filter_name: filter.name, filter_display_name: filter.display_name, items: [...categoryMap.values()] };
+                    } else {
+                        return {
+                            filter_name: filter.name,
+                            filter_display_name: filter.display_name,
+                            items: items.map(item => ({ id: item._id.toString(), name: item.name }))
+                        };
+                    }
+                })
+            );
 
-            const updateCartSessionQuery = `
-                UPDATE cart_session 
-                SET sum = 0, discount_percent = 0 
-                WHERE user_id = ?
-            `;
-            await conn.query(updateCartSessionQuery, [userId]);
-
-            await conn.commit();
+            return result;
         } catch (error) {
-            await conn.rollback();
-            console.error('Error processing payment:', error);
+            console.error('Error fetching book filters:', error);
             throw error;
-        } finally {
-            conn.release();
         }
     }
 
-    async updateCartItemQuantity(userId, bookOptionId, quantity) {
-        const conn = await this.pool.getConnection();
-
+    async getBookWithPriceOptions(bookId) {
         try {
-            const updateQuery = `
-                UPDATE cart_item ci
-                JOIN book_option bo ON bo.id = ci.book_offer
-                JOIN cart_session cs ON ci.cart_session_id = cs.id
-                SET ci.quantity = LEAST(bo.count, ?)
-                WHERE cs.user_id = ? AND ci.book_offer = ?
-            `;
+            const book = (await this.db
+                .collection('book')
+                .aggregate([
+                    { $match: { _id: new ObjectId(bookId) } },
+                    {
+                        $lookup: {
+                            from: 'series',
+                            let: { seriesId: '$series_id' },
+                            pipeline: [
+                                { $match: { $expr: { $eq: ['$_id', '$$seriesId'] } } }
+                            ],
+                            as: 'series'
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: 'language',
+                            localField: 'language_id',
+                            foreignField: '_id',
+                            as: 'language'
+                        }
+                    },
+                    { $unwind: '$language' },
+                    {
+                        $lookup: {
+                            from: 'book_option',
+                            localField: '_id',
+                            foreignField: 'book_id',
+                            pipeline: [
+                                {
+                                    $lookup: {
+                                        from: 'state',
+                                        localField: 'state_id',
+                                        foreignField: '_id',
+                                        as: 'state'
+                                    }
+                                },
+                                { $unwind: '$state' },
+                                { $sort: {price: 1} }
+                            ],
+                            as: 'price_options',
+                        }
+                    },
+                ])
+                .toArray())[0];
 
-            await conn.query(updateQuery, [quantity, userId, bookOptionId]);
+            if (!book) return null;
+
+            /*
+            const priceOptions = await this.db
+                .collection('book_option')
+                .aggregate([
+                    { $match: { book_id: new ObjectId(bookId) } },
+                    {
+                        $lookup: {
+                            from: 'state',
+                            localField: 'state_id',
+                            foreignField: '_id',
+                            as: 'state'
+                        }
+                    },
+                    { $unwind: '$state' },
+                    { $sort: { price: 1 } }
+                ])
+                .toArray();*/
+            const priceOptions = book.price_options;
+
+            return {
+                id: book._id.toString(),
+                title: book.title,
+                desc: book.description,
+                language: book.language.name,
+                year: book.year,
+                publisher: book.publisher,
+                authors: book.authors,
+                series_id: book.series_id,
+                series_name: book.series[0]?.name || null,
+                volume: book.volume,
+                image_path: book.image_path,
+                price_options: priceOptions.map(option => ({
+                    id: option._id.toString(),
+                    state: option.state.name,
+                    price: option.price,
+                    count: option.count
+                }))
+            };
+        } catch (error) {
+            console.error('Error fetching book with price options:', error);
+            throw error;
+        }
+    }
+
+    async updateCartSessionTotal(userId) {
+        try {
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
+
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
+
+            const cartItems = await this.db.collection('cart_item').aggregate([
+                { $match: { cart_session_id: cartSession._id } },
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: 'book_offer',
+                        foreignField: '_id',
+                        as: 'option'
+                    }
+                },
+                { $unwind: '$option' },
+                {
+                    $group: {
+                        _id: null,
+                        sum: { $sum: { $multiply: ['$quantity', '$option.price'] } }
+                    }
+                }
+            ]).toArray();
+
+            const sum = cartItems[0]?.sum || 0;
+            const discountPercent = sum > 200 ? 10 : sum > 100 ? 5 : 0;
+
+            await this.db.collection('cart_session').updateOne(
+                { user_id: new ObjectId(userId) },
+                { $set: { sum, discount_percent: discountPercent } }
+            );
+        } catch (error) {
+            console.error('Error updating cart session total:', error);
+            throw error;
+        }
+    }
+
+    async processPayment(userId) {
+        try {
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
+
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
+
+            const cartItems = await this.db.collection('cart_item').aggregate([
+                { $match: { cart_session_id: cartSession._id } },
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: 'book_offer',
+                        foreignField: '_id',
+                        as: 'option'
+                    }
+                },
+                { $unwind: '$option' },
+                { $project: { book_option_id: '$option._id', quantity: 1, stock: '$option.count' } }
+            ]).toArray();
+
+            for (const item of cartItems) {
+                if (item.quantity > item.stock) {
+                    throw new Error(`Not enough stock for book option ID: ${item.book_option_id}`);
+                }
+
+                const updateResult = await this.db.collection('book_option').updateOne(
+                    { _id: item.book_option_id, count: { $gte: item.quantity } },
+                    { $inc: { count: -item.quantity } }
+                );
+
+                if (updateResult.modifiedCount === 0) {
+                    throw new Error(`Failed to update stock for book option ID: ${item.book_option_id}`);
+                }
+            }
+
+            await this.db.collection('cart_item').deleteMany({ cart_session_id: cartSession._id } );
+
+            await this.db.collection('cart_session').updateOne(
+                { _id: cartSession._id },
+                { $set: { sum: 0, discount_percent: 0 } }
+            );
+
+        } catch (error) {
+            console.error('Error processing payment:', error);
+            throw error;
+        } 
+    }
+
+    async updateCartItemQuantity(userId, bookOptionId, quantity) {
+        try {
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
+
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
+
+            const bookOption = await this.db.collection('book_option').findOne(
+                { _id: new ObjectId(bookOptionId) },
+                { projection: { count: 1 } }
+            );
+
+            if (!bookOption) {
+                throw new Error(`Book option with ID ${bookOptionId} not found.`);
+            }
+
+            const updatedQuantity = Math.min(quantity, bookOption.count);
+
+            const result = await this.db.collection('cart_item').updateOne(
+                { cart_session_id: cartSession._id, book_offer: new ObjectId(bookOptionId) },
+                { $set: { quantity: updatedQuantity } }
+            );
+
+            if (result.matchedCount === 0) {
+                throw new Error(
+                    `Cart item not found in session ${cartSession._id} for book option ${bookOptionId}`
+                );
+            }
 
             await this.updateCartSessionTotal(userId);
 
         } catch (error) {
             console.error('Error updating cart item quantity:', error);
             throw error;
-        } finally {
-            conn.release();
         }
     }
 
     async deleteCartItem(userId, bookOptionId) {
-        const conn = await this.pool.getConnection();
-
         try {
-            const deleteQuery = `
-                DELETE ci FROM cart_item ci
-                JOIN cart_session cs ON ci.cart_session_id = cs.id
-                WHERE cs.user_id = ? AND ci.book_offer = ?
-            `;
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
 
-            await conn.query(deleteQuery, [userId, bookOptionId]);
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
+
+            const result = await this.db.collection('cart_item').deleteOne({
+                cart_session_id: cartSession._id,
+                book_offer: new ObjectId(bookOptionId),
+            });
+
+            if (result.deletedCount === 0) {
+                throw new Error(`Cart item not found for book option ID: ${bookOptionId}`);
+            }
 
             await this.updateCartSessionTotal(userId);
-
         } catch (error) {
             console.error('Error deleting cart item:', error);
             throw error;
-        } finally {
-            conn.release();
         }
     }
 
     async getCartItem(userId, bookOptionId) {
-        const conn = await this.pool.getConnection();
+        try {
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
 
-        const query = `
-            SELECT ci.id, ci.quantity
-            FROM cart_item ci
-            JOIN cart_session cs ON ci.cart_session_id = cs.id
-            WHERE cs.user_id = ? AND ci.book_offer = ?
-        `;
-        const [result] = await conn.query(query, [userId, bookOptionId]);
-        
-        conn.release();
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
 
-        return result.length > 0 ? result[0] : null;
+            const cartItem = await this.db.collection('cart_item').findOne({
+                cart_session_id: cartSession._id,
+                book_offer: new ObjectId(bookOptionId),
+            });
+
+            return cartItem ? { id: cartItem._id.toString(), quantity: cartItem.quantity } : null;
+        } catch (error) {
+            console.error('Error retrieving cart item:', error);
+            throw error;
+        }
     }
 
     async getUserCart(userId) {
-        const conn = await this.pool.getConnection();
-
         try {
-            const bookDetailsQuery = `
-                SELECT bo.id AS option_id, b.title, b.authors, b.image_path, s.name as state, bo.price, ci.quantity,
-                       (bo.price * ci.quantity) AS total_price, bo.count as available_quantity
-                FROM cart_item ci
-                JOIN book_option bo ON ci.book_offer = bo.id
-                JOIN book b ON bo.book_id = b.id
-                JOIN state s ON bo.state_id = s.id
-                JOIN cart_session cs ON ci.cart_session_id = cs.id
-                WHERE cs.user_id = ?
-            `;
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
 
-            const [booksData] = await conn.query(bookDetailsQuery, [userId]);
+            if (!cartSession) {
+                throw new Error(`Cart session not found for user ID: ${userId}`);
+            }
 
-            const books = booksData.map(book => new CartBookView(
-                book.option_id,
-                book.title,
-                book.authors,
-                book.image_path,
-                book.state,
-                book.price,
-                book.quantity,
-                book.total_price,
-                book.available_quantity
-            ));
+            const booksData = await this.db.collection('cart_item').aggregate([
+                { $match: { cart_session_id: cartSession._id } },
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: 'book_offer',
+                        foreignField: '_id',
+                        as: 'book_option',
+                    },
+                },
+                { $unwind: '$book_option' },
+                {
+                    $lookup: {
+                        from: 'book',
+                        localField: 'book_option.book_id',
+                        foreignField: '_id',
+                        as: 'book',
+                    },
+                },
+                { $unwind: '$book' },
+                {
+                    $lookup: {
+                        from: 'state',
+                        localField: 'book_option.state_id',
+                        foreignField: '_id',
+                        as: 'state',
+                    },
+                },
+                { $unwind: '$state' },
+                {
+                    $project: {
+                        option_id: '$book_option._id',
+                        title: '$book.title',
+                        authors: '$book.authors',
+                        image_path: '$book.image_path',
+                        state: '$state.name',
+                        price: '$book_option.price',
+                        quantity: '$quantity',
+                        total_price: { $multiply: ['$quantity', '$book_option.price'] },
+                        available_quantity: '$book_option.count',
+                    },
+                },
+            ]).toArray();
 
-            const cartSessionQuery = `
-                SELECT 
-                    sum, 
-                    discount_percent, 
-                    TRUNCATE((discount_percent / 100) * sum, 2) AS discount_sum,
-                    sum - (SELECT discount_sum) AS total
-                FROM cart_session 
-                WHERE user_id = ?
-            `;
-            const [[cartSession]] = await conn.query(cartSessionQuery, [userId]);
+            const books = booksData.map(book => ({
+                option_id: book.option_id.toString(),
+                title: book.title,
+                authors: book.authors,
+                image_path: book.image_path,
+                state: book.state,
+                price: book.price.toFixed(2),
+                quantity: book.quantity,
+                total_price: book.total_price.toFixed(2),
+                available_quantity: book.available_quantity,
+            }));
 
-            return new Cart(cartSession.sum, cartSession.discount_percent, cartSession.discount_sum, cartSession.total, books);
+            const discountSum = (cartSession.discount_percent / 100) * cartSession.sum;
+            const total = cartSession.sum - discountSum;
+
+            console.log({
+                sum: cartSession.sum,
+                discount_percent: cartSession.discount_percent,
+                discount_sum: discountSum.toFixed(2),
+                total: total.toFixed(2),
+                books,
+            });
+
+            return {
+                sum: cartSession.sum.toFixed(2),
+                discount_percent: cartSession.discount_percent.toFixed(2),
+                discount_sum: discountSum.toFixed(2),
+                total: total.toFixed(2),
+                books,
+            };
         } catch (error) {
             console.error('Error retrieving user cart:', error);
             throw error;
-        } finally {
-            conn.release();
         }
     }
 
     async incrementCartItem(cartItemId) {
-        const conn = await this.pool.getConnection();
-        const query = `UPDATE cart_item SET quantity = quantity + 1 WHERE id = ?`;
-
-        await conn.query(query, [cartItemId]);
-
-        conn.release();
+        try {
+            await this.db.collection('cart_item').updateOne(
+                { _id: new ObjectId(cartItemId) },
+                { $inc: { quantity: 1 } }
+            );
+        } catch (error) {
+            console.error('Error incrementing cart item quantity:', error);
+            throw error;
+        }
     }
 
     async addBookToCart(userId, bookOptionId) {
-        const conn = await this.pool.getConnection();
+        try {
+            const cartSession = await this.db.collection('cart_session').findOne({ user_id: new ObjectId(userId) });
 
-        const sessionQuery = `SELECT id FROM cart_session WHERE user_id = ?`;
-        let [cartSession] = await conn.query(sessionQuery, [userId]);
+            if (!cartSession) {
+                throw new Error('Cart session not found for user.');
+            }
 
-        const cartSessionId = cartSession[0].id;
-        
-        const existingCartItem = await this.getCartItem(userId, bookOptionId);
-        if (existingCartItem) {
-            await this.incrementCartItem(existingCartItem.id);
-        } else {
-            const insertItem = `INSERT INTO cart_item (cart_session_id, book_offer, quantity) VALUES (?, ?, 1)`;
-            await conn.query(insertItem, [cartSessionId, bookOptionId]);
+            const cartSessionId = cartSession._id;
+
+            const existingCartItem = await this.db.collection('cart_item').findOne({
+                cart_session_id: cartSessionId,
+                book_offer: new ObjectId(bookOptionId),
+            });
+
+            if (existingCartItem) {
+                await this.incrementCartItem(existingCartItem._id);
+            } else {
+                await this.db.collection('cart_item').insertOne({
+                    cart_session_id: cartSessionId,
+                    book_offer: new ObjectId(bookOptionId),
+                    quantity: 1,
+                });
+            }
+
+            await this.updateCartSessionTotal(userId);
+        } catch (error) {
+            console.error('Error adding book to cart:', error);
+            throw error;
         }
-
-        await this.updateCartSessionTotal(userId);
-
-        conn.release();
     }
 
     async addUser(name, mail, passwordHash) {
         try {
-            const query = `INSERT INTO user (name, mail, password_hash) VALUES (?, ?, ?)`;
-            const conn = await this.pool.getConnection();
-            const [result] = await conn.query(query, [name, mail, passwordHash]);
+            const userResult = await this.db.collection('user').insertOne({
+                name: name,
+                mail: mail,
+                password_hash: passwordHash,
+            });
 
-            const userId = result.insertId;
+            const userId = userResult.insertedId;
 
-            const insertSession = `INSERT INTO cart_session (user_id, discount_percent, sum) VALUES (?, 0, 0)`;
-            await conn.query(insertSession, [userId]);
-
-            conn.release();
+            await this.db.collection('cart_session').insertOne({
+                user_id: userId,
+                discount_percent: 0,
+                sum: 0,
+            });
 
             console.log('User added successfully.');
         } catch (error) {
@@ -392,190 +727,295 @@ class DBHandler {
 
     async findUserByEmail(mail) {
         try {
-            const query = `SELECT * FROM user WHERE mail = ?`;
-            const conn = await this.pool.getConnection();
-            const [rows] = await conn.query(query, [mail]);
-            conn.release();
+            const user = await this.db.collection('user').findOne({ mail });
 
-            if(rows[0]) {
-                return new User(rows[0].id, rows[0].mail, rows[0].name, rows[0].password_hash);
+            if (user) {
+                return {
+                    id: user._id.toString(),
+                    name: user.name,
+                    email: user.mail,
+                    password_hash: user.password_hash
+                };
             }
 
             return null;
         } catch (error) {
-            console.error('Error fetching user:', error);
+            console.error('Error finding user by email:', error);
             throw error;
         }
     }
 
     async getBookViews(search_query = null, category_id = null, lang_id = null, state_id = null, limit = null) {
         try {
-            const conn = await this.pool.getConnection();
-
-            let query = `
-                SELECT 
-                    b.id, b.image_path, b.title, b.authors, MIN(bo.price) as min_price, SUM(bo.count) as total_count
-                FROM book b
-                LEFT JOIN book_option bo ON bo.book_id = b.id
-                LEFT JOIN category c ON b.category_id = c.id
-                WHERE bo.count > 0
-            `;
-
-            const params = [];
+            const matchStage = { $and: [{ 'book_option.count': { $gt: 0 } }] };
 
             if (search_query) {
-                query += ` AND b.title LIKE ?`;
-                params.push(`%${search_query}%`);
+                matchStage.$and.push({ 'book.title': { $regex: search_query, $options: 'i' } });
             }
             if (category_id) {
-                query += ` AND (b.category_id = ? OR c.parent_category = ?)`;
-                params.push(category_id, category_id);
+                matchStage.$and.push({
+                    $or: [
+                        { 'book.category_id': new ObjectId(category_id) },
+                        { 'category.parent_category': new ObjectId(category_id) },
+                    ],
+                });
             }
             if (lang_id) {
-                query += ` AND b.language_id = ?`;
-                params.push(lang_id);
+                matchStage.$and.push({ 'book.language_id': new ObjectId(lang_id) });
             }
             if (state_id) {
-                query += ` AND bo.state_id = ?`;
-                params.push(state_id);
+                matchStage.$and.push({ 'book_option.state_id': new ObjectId(state_id) });
             }
 
-            query += ` GROUP BY b.id`;
+            // Build the aggregation pipeline
+            const pipeline = [
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: '_id',
+                        foreignField: 'book_id',
+                        as: 'book_option',
+                    },
+                },
+                { $unwind: '$book_option' },
+                {
+                    $lookup: {
+                        from: 'category',
+                        localField: 'category_id',
+                        foreignField: '_id',
+                        as: 'category',
+                    },
+                },
+                { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+                { $match: matchStage },
+                {
+                    $group: {
+                        _id: '$_id',
+                        image_path: { $first: '$image_path' },
+                        title: { $first: '$title' },
+                        authors: { $first: '$authors' },
+                        min_price: { $min: '$book_option.price' },
+                        total_count: { $sum: '$book_option.count' },
+                    },
+                },
+                //{ $sort: { title: 1 } }, // Sort alphabetically by title
+            ];
 
             if (limit) {
-                query += ` LIMIT ?`;
-                params.push(limit);
+                pipeline.push({ $limit: limit });
             }
 
-            const [rows] = await conn.execute(query, params);
+            const books = await this.db.collection('book').aggregate(pipeline).toArray();
 
-            const bookViews = rows.map(row => new BookOfferView(
-                row.id,
-                row.title,
-                row.authors,
-                row.image_path,
-                row.min_price,
-                row.total_count
-            ));
-
-            conn.release();
-            return bookViews;
+            return books.map(book => ({
+                id: book._id.toString(),
+                image_path: book.image_path,
+                title: book.title,
+                authors: book.authors,
+                min_price: book.min_price,
+                total_count: book.total_count,
+            }));
         } catch (error) {
             console.error('Error fetching book views:', error);
             throw error;
         }
-}
+    }
+
 
     async getBookOffers(search_query = null, category_id = null, lang_id = null, state_id = null) {
         try {
-            const conn = await this.pool.getConnection();
+            const matchStage = { $and: [] };
 
-            let query = `
-                SELECT 
-                    b.id, b.title, b.description, b.year, b.publisher, b.authors, b.image_path, bo.price, bo.count,
-                    l.name as language, s.name as state, b.series_id, sr.name as series_name, b.volume,
-                    bo.state_id as state_id
-                FROM book b
-                LEFT JOIN language l ON b.language_id = l.id
-                LEFT JOIN series sr ON b.series_id = sr.id
-                LEFT JOIN book_option bo ON bo.book_id = b.id
-                LEFT JOIN state s ON bo.state_id = s.id
-                LEFT JOIN category c ON b.category_id = c.id
-                WHERE 1=1
-            `;
-
-            const params = [];
-
-            // Filters:
             if (search_query) {
-                query += ` AND b.title LIKE ?`;
-                params.push(`%${search_query}%`);
+                matchStage.$and.push({ title: { $regex: search_query, $options: 'i' } });
             }
             if (category_id) {
-                query += ` AND (b.category_id = ? OR c.parent_category = ?)`;
-                params.push(category_id, category_id);
+                matchStage.$and.push({
+                    $or: [
+                        { category_id: new ObjectId(category_id) },
+                        { 'category.parent_category': new ObjectId(category_id) }
+                    ]
+                });
             }
             if (lang_id) {
-                query += ` AND b.language_id = ?`;
-                params.push(lang_id);
+                matchStage.$and.push({ language_id: new ObjectId(lang_id) });
             }
             if (state_id) {
-                query += ` AND bo.state_id = ?`;
-                params.push(state_id);
+                matchStage.$and.push({ 'book_option.state_id': new ObjectId(state_id) });
             }
 
-            const [rows] = await conn.execute(query, params);
+            if (!matchStage.$and.length) {
+                delete matchStage.$and;
+            }
 
+            // Build aggregation pipeline
+            const pipeline = [
+                {
+                    $lookup: {
+                        from: 'language',
+                        localField: 'language_id',
+                        foreignField: '_id',
+                        as: 'language'
+                    }
+                },
+                { $unwind: { path: '$language', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'series',
+                        localField: 'series_id',
+                        foreignField: '_id',
+                        as: 'series'
+                    }
+                },
+                { $unwind: { path: '$series', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: '_id',
+                        foreignField: 'book_id',
+                        as: 'book_option'
+                    }
+                },
+                { $unwind: { path: '$book_option', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'state',
+                        localField: 'book_option.state_id',
+                        foreignField: '_id',
+                        as: 'state'
+                    }
+                },
+                { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'category',
+                        localField: 'category_id',
+                        foreignField: '_id',
+                        as: 'category'
+                    }
+                },
+                { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+                { $match: matchStage },
+                {
+                    $project: {
+                        id: '$_id',
+                        title: 1,
+                        description: 1,
+                        year: 1,
+                        publisher: 1,
+                        authors: 1,
+                        image_path: 1,
+                        language: '$language.name',
+                        state: '$state.name',
+                        state_id: '$book_option.state_id',
+                        price: '$book_option.price',
+                        count: '$book_option.count',
+                        series_id: '$series._id',
+                        series_name: '$series.name',
+                        volume: 1
+                    }
+                },
+                //{ $sort: { title: 1 } } // Sort alphabetically by title
+            ];
+
+            // Execute aggregation
+            const rows = await this.db.collection('book').aggregate(pipeline).toArray();
+
+            // Transform data into desired structure
             const bookOffers = rows.reduce((offers, row) => {
-                let existingOffer = offers.find(offer => offer.id === row.id);
+                let existingOffer = offers.find(offer => offer.id.equals(row.id));
 
                 if (!existingOffer) {
-                    existingOffer = new BookOffer(
-                        row.id,
-                        row.title,
-                        row.description,
-                        row.language,
-                        row.year,
-                        row.publisher,
-                        row.authors,
-                        row.series_id,
-                        row.series_name,
-                        row.volume,
-                        row.image_path,
-                        []
-                    );
+                    existingOffer = {
+                        id: row.id,
+                        title: row.title,
+                        desc: row.description,
+                        language: row.language,
+                        year: row.year,
+                        publisher: row.publisher,
+                        authors: row.authors,
+                        series_id: row.series_id?.toString() || null,
+                        series_name: row.series_name || null,
+                        volume: row.volume,
+                        image_path: row.image_path,
+                        price_options: []
+                    };
                     offers.push(existingOffer);
                 }
 
-                existingOffer.price_options.push(
-                    new BookPriceOption(
-                        row.state_id,
-                        row.state,
-                        row.price,
-                        row.count
-                    )
-                );
+                existingOffer.price_options.push({
+                    state_id: row.state_id?.toString() || null,
+                    state: row.state,
+                    price: row.price,
+                    count: row.count
+                });
 
                 return offers;
             }, []);
 
-            conn.release();
             return bookOffers;
         } catch (error) {
             console.error('Error fetching book offers:', error);
+            throw error;
         }
     }
 
     async getBookOffersFromSeries(book_id, series_id) {
         try {
-            const conn = await this.pool.getConnection();
+            const pipeline = [
+                {
+                    $match: {
+                        series_id: new ObjectId(series_id), // Match books from the same series
+                        _id: { $ne: new ObjectId(book_id) } // Exclude the given book
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'book_option',
+                        localField: '_id',
+                        foreignField: 'book_id',
+                        as: 'book_options'
+                    }
+                },
+                {
+                    $unwind: '$book_options' // Decompose the book_options array
+                },
+                {
+                    $match: {
+                        'book_options.count': { $gt: 0 } // Only include books with available stock
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        title: { $first: '$title' },
+                        authors: { $first: '$authors' },
+                        image_path: { $first: '$image_path' },
+                        min_price: { $min: '$book_options.price' }, // Find the minimum price
+                        total_count: { $sum: '$book_options.count' } // Sum the counts
+                    }
+                },
+                {
+                    $sort: { _id: 1 } // Optional: Sort results by ID
+                }
+            ];
 
-            let query = `
-                SELECT 
-                    b.id, b.image_path, b.title, b.authors, MIN(bo.price) as min_price, SUM(bo.count) as total_count
-                FROM book b
-                JOIN book_option bo ON bo.book_id = b.id
-                JOIN category c ON b.category_id = c.id
-                WHERE bo.count > 0 AND (b.series_id = ?) AND (b.id != ?)
-                GROUP BY b.id
-                ORDER BY b.series_id ASC
-            `;
+            // Execute the aggregation pipeline
+            const rows = await this.db.collection('book').aggregate(pipeline).toArray();
 
-            const [rows] = await conn.execute(query, [series_id, book_id]);
+            // Map results to BookOfferView instances
+            const bookViews = rows.map(row => ({
+                id: row._id.toString(),
+                title: row.title,
+                authors: row.authors,
+                image_path: row.image_path,
+                min_price: row.min_price,
+                total_count: row.total_count
+            }));
 
-            const bookViews = rows.map(row => new BookOfferView(
-                row.id,
-                row.title,
-                row.authors,
-                row.image_path,
-                row.min_price,
-                row.total_count
-            ));
-
-            conn.release();
             return bookViews;
         } catch (error) {
-            console.error('Error fetching book views:', error);
+            console.error('Error fetching book offers from series:', error);
             throw error;
         }
     }

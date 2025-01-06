@@ -1,0 +1,8 @@
+bcrypt - hashowanie
+body-parser - parsowanie requestów (dostępnych w req.body)
+dotenv - do pliku konfiguracyjnego
+ejs - templatki
+express - framework do tworzenia serwera
+express-session - sesje logowania użytkownika
+fs - system plików nodejs
+mysql2 - biblioteka do obsługi bazy danych

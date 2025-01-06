@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         summaryDetails.innerHTML = `
             <p>Cena: ${cart.sum} zł</p>
-            <p>Obniżka: ${cart.discount_sum} zł (${cart.discount_percent}%)</p>
+            <p>Rabat: ${cart.discount_sum} zł (${cart.discount_percent}%)</p>
             <p>SUMA: ${cart.total} zł</p>
         `;
         hideLoading();  
