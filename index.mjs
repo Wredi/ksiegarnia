@@ -24,7 +24,7 @@ const dbHandler = new DBHandler(
 export { dbHandler };
 */
 const dbHandler = new DBHandler(
-    "mongodb://0.0.0.0:27017",
+    "mongodb://0.0.0.0:27017/sklep",
     "sklep"
 );
 await dbHandler.connect();
@@ -35,6 +35,9 @@ if(process.env.INIT){
     process.exit(0);
 }else if(process.env.TRUNCATE){
     await dbHandler.truncateDatabase();
+    process.exit(0);
+}else if(process.env.TEST){
+    await dbHandler.test();
     process.exit(0);
 }else{
     const __dirname = import.meta.dirname;
