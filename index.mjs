@@ -13,7 +13,6 @@ import { config } from 'dotenv';
 
 config();
 
-/*
 const dbHandler = new DBHandler(
     process.env.DB_HOST,
     process.env.DB_USER,
@@ -21,13 +20,6 @@ const dbHandler = new DBHandler(
     process.env.DB_NAME,
     process.env.DB_PORT
 );
-export { dbHandler };
-*/
-const dbHandler = new DBHandler(
-    "mongodb://0.0.0.0:27017",
-    "sklep"
-);
-await dbHandler.connect();
 export { dbHandler };
 
 if(process.env.INIT){
